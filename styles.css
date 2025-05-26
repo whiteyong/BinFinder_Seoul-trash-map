@@ -374,33 +374,22 @@ body {
   min-height: 80px;
 }
 
+.side-menu-header h2 {
+  font-family: "Inconsolata", monospace;
+  font-size: 17px;
+  font-weight: bold;
+  color: #000000;
+  margin: 0;
+  text-align: center;
+}
+
 .side-menu-header .close-button {
-  display: none; /* 닫기 버튼 숨김 */
+  display: none !important; /* 닫기 버튼 완전히 숨김 */
 }
 
 /* 기존 .logo-image 스타일 제거하고 .logo-text로 대체 */
 .side-menu-header .logo-image {
   display: none; /* 기존 로고 이미지 숨김 */
-}
-
-.side-menu-header .close-button {
-  color: #333;
-  position: static; /* absolute에서 static으로 변경 */
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s;
-  flex-shrink: 0;
-}
-
-.side-menu-header .close-button:hover {
-  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .menu-list {
