@@ -367,24 +367,25 @@ body {
 
 .side-menu-header {
   display: flex;
-  justify-content: center; /* space-between에서 center로 변경 */
+  justify-content: space-between;
   align-items: center;
-  padding: 20px 16px; /* 상하 패딩을 20px로 증가 */
+  padding: 20px 16px 20px 24px; /* 좌측 패딩을 24px로 증가 */
   position: relative;
+  min-height: 60px; /* 최소 높이 설정 */
 }
 
 .side-menu-header .logo-image {
-  height: 28px; /* 24px에서 28px로 약간 증가 */
+  height: 32px; /* 28px에서 32px로 증가 */
   width: auto;
   display: block;
+  flex-shrink: 0; /* 로고가 줄어들지 않도록 설정 */
+  max-width: calc(100% - 80px); /* 60px에서 80px로 증가하여 더 많은 공간 확보 */
+  margin-left: 8px; /* 좌측 마진 추가 */
 }
 
 .side-menu-header .close-button {
   color: #333;
-  position: absolute; /* static에서 absolute로 변경 */
-  right: 16px; /* 오른쪽 16px 위치에 고정 */
-  top: 50%;
-  transform: translateY(-50%); /* 수직 중앙 정렬 */
+  position: static; /* absolute에서 static으로 변경 */
   background: none;
   border: none;
   font-size: 20px;
@@ -395,6 +396,7 @@ body {
   justify-content: center;
   border-radius: 50%;
   transition: background-color 0.2s;
+  flex-shrink: 0; /* 버튼이 줄어들지 않도록 설정 */
 }
 
 .side-menu-header .close-button:hover {
