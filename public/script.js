@@ -571,6 +571,34 @@ document.addEventListener("DOMContentLoaded", () => {
       })
     })
 
+    // BinFinder 소개 모달 관련 이벤트
+    const aboutBinFinder = document.getElementById("aboutBinFinder")
+    const aboutModal = document.getElementById("aboutModal")
+    const closeAboutModal = document.getElementById("closeAboutModal")
+
+    if (aboutBinFinder && aboutModal && closeAboutModal) {
+      // BinFinder 소개 클릭 이벤트
+      aboutBinFinder.addEventListener("click", () => {
+        aboutModal.classList.add("show")
+        // 사이드 메뉴 닫기
+        if (sideMenu) {
+          sideMenu.classList.remove("show")
+        }
+      })
+
+      // 모달 닫기 버튼 클릭 이벤트
+      closeAboutModal.addEventListener("click", () => {
+        aboutModal.classList.remove("show")
+      })
+
+      // 모달 배경 클릭 시 닫기
+      aboutModal.addEventListener("click", (e) => {
+        if (e.target === aboutModal) {
+          aboutModal.classList.remove("show")
+        }
+      })
+    }
+
     // 개발자 모드 설정
     setupDevMode()
   }
