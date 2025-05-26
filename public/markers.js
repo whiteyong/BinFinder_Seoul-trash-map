@@ -256,6 +256,38 @@ function createMarkersFromCSV() {
   // 지도 이동/줌 이벤트에 마커 업데이트 연결
   const map = window.map
 
+  // 지도 클릭 시 선택된 마커 해제 및 인포윈도우 닫기 (디버깅 포함)
+  window.naver.maps.Event.addListener(map, "click", (e) => {
+    console.log("🗺️ 지도 클릭 이벤트 발생")
+    if (window.selectedMarker) {
+      console.log("📍 선택된 마커가 있음 - 해제 중...")
+
+      // 선택된 마커를 기본 상태로 되돌림
+      window.selectedMarker.setIcon({
+        url: "/public/trashcan.svg",
+        size: new window.naver.maps.Size(30, 40),
+        scaledSize: new window.naver.maps.Size(30, 40),
+        anchor: new window.naver.maps.Point(15, 40),
+      })
+      console.log("✅ 마커 아이콘 변경 완료")
+
+      // 인포윈도우 닫기
+      if (window.selectedMarker.infoWindow) {
+        window.selectedMarker.infoWindow.close()
+        console.log("✅ 인포윈도우 닫기 완료")
+      } else {
+        console.log("❌ 인포윈도우를 찾을 수 없음")
+      }
+
+      // 선택 상태 초기화
+      window.selectedMarker = null
+      window.selectedMarkerData = null
+      console.log("✅ 선택 상태 초기화 완료")
+    } else {
+      console.log("📍 선택된 마커가 없음")
+    }
+  })
+
   // 지도 이동이 끝났을 때 마커 업데이트
   window.naver.maps.Event.addListener(map, "idle", () => {
     updateVisibleAreaMarkers()
@@ -362,13 +394,20 @@ function updateVisibleAreaMarkers() {
 
     // 마커 클릭 이벤트
     window.naver.maps.Event.addListener(marker, "click", (e) => {
+      console.log("🔥 마커 클릭 이벤트 리스너 호출됨!")
+
       if (e && e.domEvent) {
+        console.log("🔥 이벤트 전파 중단 처리")
         e.domEvent.stopPropagation()
         e.domEvent.preventDefault()
       }
 
+      console.log("🔥 마커 클릭됨 - 현재 선택된 마커:", window.selectedMarker)
+      console.log("🔥 클릭된 마커:", marker)
+
       // 같은 마커를 다시 클릭한 경우 선택 해제
       if (window.selectedMarker === marker) {
+        console.log("🔥 같은 마커 재클릭 - 선택 해제")
         marker.setIcon({
           url: "/public/trashcan.svg",
           size: new window.naver.maps.Size(30, 40),
@@ -381,8 +420,11 @@ function updateVisibleAreaMarkers() {
         return
       }
 
+      console.log("🔥 새로운 마커 선택 시작")
+
       // 이전에 선택된 마커가 있다면 초기화
       if (window.selectedMarker) {
+        console.log("🔥 이전 마커 초기화")
         window.selectedMarker.setIcon({
           url: "/public/trashcan.svg",
           size: new window.naver.maps.Size(30, 40),
@@ -400,6 +442,7 @@ function updateVisibleAreaMarkers() {
         }
       }
 
+      console.log("🔥 새로운 마커 아이콘 변경")
       // 새로운 마커 선택
       marker.setIcon({
         url: "/public/trashcan_detailed.svg",
@@ -412,26 +455,28 @@ function updateVisibleAreaMarkers() {
       window.selectedMarkerCoords = coords
       window.selectedMarkerData = item // 선택된 마커 데이터 저장
 
+      console.log("🔥 지도 중심 이동 시작")
       // 지도 중심 이동을 약간 지연시켜 마커 아이콘 변경이 완료된 후 실행
       setTimeout(() => {
         map.setCenter(coords)
       }, 50)
 
       // 인포윈도우 내용 생성 및 표시
-      console.log("인포윈도우 내용 생성 중:", item)
+      console.log("🔥 인포윈도우 내용 생성 중:", item)
       const content = createInfoWindowContent(item)
-      console.log("생성된 인포윈도우 내용:", content)
+      console.log("🔥 생성된 인포윈도우 내용:", content)
 
       infoWindow.setContent(content)
       infoWindow.open(map, marker)
       marker.infoWindow = infoWindow
 
-      console.log("인포윈도우 열림 완료")
+      console.log("🔥 인포윈도우 열림 완료")
 
       // 닫기 버튼 이벤트 리스너 추가
       setTimeout(() => {
         const closeButton = document.querySelector(".info-window-close")
         if (closeButton) {
+          console.log("🔥 닫기 버튼 이벤트 리스너 추가")
           closeButton.onclick = (e) => {
             e.stopPropagation()
             infoWindow.close()
@@ -445,6 +490,8 @@ function updateVisibleAreaMarkers() {
             window.selectedMarker = null
             window.selectedMarkerData = null
           }
+        } else {
+          console.log("🔥 닫기 버튼을 찾을 수 없음")
         }
       }, 100)
     })
