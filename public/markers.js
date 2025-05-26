@@ -5,6 +5,8 @@ window.naver = window.naver || {}
 window.currentUserLocation = null
 // 선택된 마커 정보 저장
 window.selectedMarkerData = null
+// 지도 클릭 이벤트 리스너 저장
+window.mapClickListener = null
 
 // Declare the clearMarkers function before using it
 function clearMarkers() {
@@ -13,6 +15,30 @@ function clearMarkers() {
       markerObj.marker.setMap(null)
     })
     window.markers = []
+  }
+}
+
+// 선택된 마커 해제 함수
+function clearSelectedMarker() {
+  if (window.selectedMarker) {
+    // 선택된 마커를 기본 상태로 되돌림
+    window.selectedMarker.setIcon({
+      url: "/public/trashcan.svg",
+      size: new window.naver.maps.Size(30, 40),
+      scaledSize: new window.naver.maps.Size(30, 40),
+      anchor: new window.naver.maps.Point(15, 40),
+    })
+
+    // 인포윈도우 닫기
+    if (window.selectedMarker.infoWindow) {
+      window.selectedMarker.infoWindow.close()
+    }
+
+    // 선택 상태 초기화
+    window.selectedMarker = null
+    window.selectedMarkerData = null
+
+    console.log("마커 선택 해제됨")
   }
 }
 
@@ -81,15 +107,7 @@ function updateOpenInfoWindow() {
       if (closeButton) {
         closeButton.onclick = (e) => {
           e.stopPropagation()
-          window.selectedMarker.infoWindow.close()
-          window.selectedMarker.setIcon({
-            url: "/public/trashcan.svg",
-            size: new window.naver.maps.Size(30, 40),
-            scaledSize: new window.naver.maps.Size(30, 40),
-            anchor: new window.naver.maps.Point(15, 40),
-          })
-          window.selectedMarker = null
-          window.selectedMarkerData = null
+          clearSelectedMarker()
         }
       }
     }, 100)
@@ -233,6 +251,24 @@ function createInfoWindowContent(item) {
   `
 }
 
+// 지도 클릭 이벤트 설정 함수
+function setupMapClickEvent() {
+  const map = window.map
+
+  // 기존 이벤트 리스너 제거
+  if (window.mapClickListener) {
+    window.naver.maps.Event.removeListener(window.mapClickListener)
+  }
+
+  // 새로운 지도 클릭 이벤트 리스너 등록
+  window.mapClickListener = window.naver.maps.Event.addListener(map, "click", (e) => {
+    console.log("지도 클릭됨")
+    clearSelectedMarker()
+  })
+
+  console.log("지도 클릭 이벤트 설정 완료")
+}
+
 // 2. 마커 생성 및 클릭 이벤트 함수 - 성능 최적화 버전
 function createMarkersFromCSV() {
   console.log("📍 최적화된 마커 생성 시작")
@@ -261,29 +297,8 @@ function createMarkersFromCSV() {
     updateVisibleAreaMarkers()
   })
 
-  // 지도 클릭 시 선택된 마커 해제 및 인포윈도우 닫기
-  window.naver.maps.Event.addListener(map, "click", () => {
-    if (window.selectedMarker) {
-      // 선택된 마커를 기본 상태로 되돌림
-      window.selectedMarker.setIcon({
-        url: "/public/trashcan.svg",
-        size: new window.naver.maps.Size(30, 40),
-        scaledSize: new window.naver.maps.Size(30, 40),
-        anchor: new window.naver.maps.Point(15, 40),
-      })
-
-      // 인포윈도우 닫기
-      if (window.selectedMarker.infoWindow) {
-        window.selectedMarker.infoWindow.close()
-      }
-
-      // 선택 상태 초기화
-      window.selectedMarker = null
-      window.selectedMarkerData = null
-
-      console.log("지도 클릭으로 마커 선택 해제")
-    }
-  })
+  // 지도 클릭 이벤트 설정 (한 번만)
+  setupMapClickEvent()
 
   // 초기 마커 로드
   updateVisibleAreaMarkers()
@@ -369,15 +384,7 @@ function updateVisibleAreaMarkers() {
           if (closeButton) {
             closeButton.onclick = (e) => {
               e.stopPropagation()
-              infoWindow.close()
-              marker.setIcon({
-                url: "/public/trashcan.svg",
-                size: new window.naver.maps.Size(30, 40),
-                scaledSize: new window.naver.maps.Size(30, 40),
-                anchor: new window.naver.maps.Point(15, 40),
-              })
-              window.selectedMarker = null
-              window.selectedMarkerData = null
+              clearSelectedMarker()
             }
           }
         }, 100)
@@ -391,37 +398,17 @@ function updateVisibleAreaMarkers() {
         e.domEvent.preventDefault()
       }
 
+      console.log("마커 클릭됨")
+
       // 같은 마커를 다시 클릭한 경우 선택 해제
       if (window.selectedMarker === marker) {
-        marker.setIcon({
-          url: "/public/trashcan.svg",
-          size: new window.naver.maps.Size(30, 40),
-          scaledSize: new window.naver.maps.Size(30, 40),
-          anchor: new window.naver.maps.Point(15, 40),
-        })
-        infoWindow.close()
-        window.selectedMarker = null
-        window.selectedMarkerData = null
+        clearSelectedMarker()
         return
       }
 
       // 이전에 선택된 마커가 있다면 초기화
       if (window.selectedMarker) {
-        window.selectedMarker.setIcon({
-          url: "/public/trashcan.svg",
-          size: new window.naver.maps.Size(30, 40),
-          scaledSize: new window.naver.maps.Size(30, 40),
-          anchor: new window.naver.maps.Point(15, 40),
-        })
-
-        if (window.selectedMarker.infoWindow) {
-          window.selectedMarker.infoWindow.close()
-        }
-
-        const locationDetail = document.querySelector(".location-detail")
-        if (locationDetail) {
-          locationDetail.classList.remove("show")
-        }
+        clearSelectedMarker()
       }
 
       // 새로운 마커 선택
@@ -458,16 +445,7 @@ function updateVisibleAreaMarkers() {
         if (closeButton) {
           closeButton.onclick = (e) => {
             e.stopPropagation()
-            infoWindow.close()
-            // 마커를 기본 상태로 되돌림
-            marker.setIcon({
-              url: "/public/trashcan.svg",
-              size: new window.naver.maps.Size(30, 40),
-              scaledSize: new window.naver.maps.Size(30, 40),
-              anchor: new window.naver.maps.Point(15, 40),
-            })
-            window.selectedMarker = null
-            window.selectedMarkerData = null
+            clearSelectedMarker()
           }
         }
       }, 100)
@@ -490,3 +468,4 @@ function updateVisibleAreaMarkers() {
 
 // 전역 함수로 노출
 window.updateVisibleAreaMarkers = updateVisibleAreaMarkers
+window.clearSelectedMarker = clearSelectedMarker
