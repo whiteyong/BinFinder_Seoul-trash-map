@@ -1,9 +1,5 @@
+import { Sidebar } from "@/components/ui/sidebar"
 document.addEventListener("DOMContentLoaded", () => {
-  const menuButton = document.getElementById("menuButton")
-  const closeMenu = document.getElementById("closeMenu")
-  const closeMenuFromAbout = document.getElementById("closeMenuFromAbout")
-  const sideMenu = document.getElementById("sideMenu")
-  const menuOverlay = document.getElementById("menuOverlay")
   const locationDetail = document.getElementById("locationDetail")
   const closeDetail = document.getElementById("closeDetail")
   const searchInput = document.getElementById("searchInput")
@@ -14,15 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const totalCount = document.getElementById("totalCount")
   const visibleCount = document.getElementById("visibleCount")
 
-  // 드로워 뷰 관련 요소들
-  const mainMenuView = document.getElementById("mainMenuView")
-  const aboutView = document.getElementById("aboutView")
-  const termsView = document.getElementById("termsView")
-  const aboutBinFinder = document.getElementById("aboutBinFinder")
-  const serviceTerms = document.getElementById("serviceTerms")
-  const backToMenu = document.getElementById("backToMenu")
-  const backToMenuFromTerms = document.getElementById("backToMenuFromTerms")
-  const closeMenuFromTerms = document.getElementById("closeMenuFromTerms")
+  // 사이드바 인스턴스
+  let sidebar = null
 
   let map = null
   window.map = map
@@ -45,35 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
   currentLocationButton.id = "currentLocationButton"
   currentLocationButton.className = "current-location-button"
   currentLocationButton.innerHTML = '<i class="fas fa-crosshairs"></i>'
-
-  // 드로워 뷰 관리 함수들
-  function showMainMenu() {
-    sideMenu.classList.remove("expanded")
-    mainMenuView.classList.add("active")
-    aboutView.classList.remove("active")
-    termsView.classList.remove("active")
-  }
-
-  function showAboutView() {
-    sideMenu.classList.add("expanded")
-    mainMenuView.classList.remove("active")
-    aboutView.classList.add("active")
-    termsView.classList.remove("active")
-  }
-
-  function showTermsView() {
-    sideMenu.classList.add("expanded")
-    mainMenuView.classList.remove("active")
-    aboutView.classList.remove("active")
-    termsView.classList.add("active")
-  }
-
-  function closeSideMenu() {
-    sideMenu.classList.remove("show", "expanded")
-    mainMenuView.classList.add("active")
-    aboutView.classList.remove("active")
-    termsView.classList.remove("active")
-  }
 
   function showLoading(show) {
     // 로딩 인디케이터를 항상 숨김 상태로 유지
@@ -521,8 +481,8 @@ document.addEventListener("DOMContentLoaded", () => {
     initMap()
     loadCSVFromLocalFile()
 
-    // 초기 상태 설정
-    showMainMenu()
+    // 사이드바 초기화
+    sidebar = new Sidebar()
 
     // 현위치 버튼 클릭 이벤트 - 브라우저 기본 위치 권한 요청 사용
     currentLocationButton.addEventListener("click", () => {
@@ -541,58 +501,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (locationDetail) {
           locationDetail.classList.remove("show")
         }
-      })
-    }
-
-    // 메뉴 버튼 클릭 이벤트
-    if (menuButton) {
-      menuButton.addEventListener("click", () => {
-        if (sideMenu) {
-          sideMenu.classList.add("show")
-          showMainMenu()
-        }
-      })
-    }
-
-    // 메뉴 닫기 버튼 클릭 이벤트
-    if (closeMenu) {
-      closeMenu.addEventListener("click", () => {
-        closeSideMenu()
-      })
-    }
-
-    // About 화면에서 메뉴 닫기 버튼 클릭 이벤트
-    if (aboutBinFinder) {
-      aboutBinFinder.addEventListener("click", () => {
-        showAboutView()
-      })
-    }
-
-    // 서비스 이용약관 클릭 이벤트
-    if (serviceTerms) {
-      serviceTerms.addEventListener("click", () => {
-        showTermsView()
-      })
-    }
-
-    // 뒤로가기 버튼 클릭 이벤트
-    if (backToMenu) {
-      backToMenu.addEventListener("click", () => {
-        showMainMenu()
-      })
-    }
-
-    // 약관 화면에서 뒤로가기 버튼 클릭 이벤트
-    if (backToMenuFromTerms) {
-      backToMenuFromTerms.addEventListener("click", () => {
-        showMainMenu()
-      })
-    }
-
-    // 약관 화면에서 메뉴 닫기 버튼 클릭 이벤트
-    if (closeMenuFromTerms) {
-      closeMenuFromTerms.addEventListener("click", () => {
-        closeSideMenu()
       })
     }
 
@@ -643,24 +551,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupDevMode()
 
     // 메뉴 오버레이 클릭 이벤트 - 기존 코드를 다음으로 교체
-    if (menuOverlay) {
-      menuOverlay.addEventListener("click", (e) => {
-        // 오버레이 자체를 클릭했을 때만 메뉴 닫기 (이벤트 버블링 방지)
-        if (e.target === menuOverlay) {
-          closeSideMenu()
-        }
-      })
-    }
-
     // 추가로 사이드 메뉴 전체 영역에서도 배경 클릭 시 닫기 처리
-    if (sideMenu) {
-      sideMenu.addEventListener("click", (e) => {
-        // 사이드 메뉴 배경(오버레이 부분)을 클릭했을 때만 닫기
-        if (e.target === sideMenu) {
-          closeSideMenu()
-        }
-      })
-    }
   }
 
   // 마커 필터링 함수
