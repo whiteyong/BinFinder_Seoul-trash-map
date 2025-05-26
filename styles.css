@@ -257,7 +257,6 @@ body {
   padding: 16px 0 0;
 }
 
-
 /* Adjust spacing for the add-to-homescreen item */
 .menu-list .add-to-homescreen {
   padding-bottom: 0;
@@ -377,6 +376,11 @@ body {
 /* Remove any potential borders from all list items */
 .menu-list li {
   border: none !important;
+}
+
+/* Style for the divider */
+.menu-list .divider {
+  display: none;
 }
 
 .district-filter {
