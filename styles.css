@@ -367,20 +367,15 @@ body {
 
 .side-menu-header {
   display: flex;
-  justify-content: center; /* 로고를 정중앙에 배치 */
+  justify-content: center; /* space-between에서 center로 변경 */
   align-items: center;
-  padding: 24px 20px; /* 상하 패딩을 24px로 증가 */
+  padding: 24px 20px;
   position: relative;
-  min-height: 80px; /* 최소 높이를 80px로 증가 */
+  min-height: 80px;
 }
 
-.side-menu-header .logo-text {
-  font-family: "Inconsolata", monospace;
-  font-size: 15px;
-  font-weight: 500;
-  color: #000000;
-  margin: 0;
-  text-align: center;
+.side-menu-header .close-button {
+  display: none; /* 닫기 버튼 숨김 */
 }
 
 /* 기존 .logo-image 스타일 제거하고 .logo-text로 대체 */
@@ -390,9 +385,7 @@ body {
 
 .side-menu-header .close-button {
   color: #333;
-  position: absolute; /* absolute로 변경하여 우측 상단에 고정 */
-  top: 20px;
-  right: 20px;
+  position: static; /* absolute에서 static으로 변경 */
   background: none;
   border: none;
   font-size: 20px;
