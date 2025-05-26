@@ -374,13 +374,14 @@ body {
   min-height: 80px;
 }
 
-.side-menu-header h2 {
-  font-family: "Inconsolata", monospace;
+.side-menu-header .logo-text {
+  font-family: "JejuHallasan", "Inconsolata", monospace;
   font-size: 17px;
   font-weight: bold;
-  color: #000000;
+  color: #666666;
   margin: 0;
   text-align: center;
+  width: 100%;
 }
 
 .side-menu-header .close-button {
