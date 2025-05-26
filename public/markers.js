@@ -5,8 +5,6 @@ window.naver = window.naver || {}
 window.currentUserLocation = null
 // 선택된 마커 정보 저장
 window.selectedMarkerData = null
-// 지도 클릭 이벤트 리스너 저장
-window.mapClickListener = null
 
 // Declare the clearMarkers function before using it
 function clearMarkers() {
@@ -15,30 +13,6 @@ function clearMarkers() {
       markerObj.marker.setMap(null)
     })
     window.markers = []
-  }
-}
-
-// 선택된 마커 해제 함수
-function clearSelectedMarker() {
-  if (window.selectedMarker) {
-    // 선택된 마커를 기본 상태로 되돌림
-    window.selectedMarker.setIcon({
-      url: "/public/trashcan.svg",
-      size: new window.naver.maps.Size(30, 40),
-      scaledSize: new window.naver.maps.Size(30, 40),
-      anchor: new window.naver.maps.Point(15, 40),
-    })
-
-    // 인포윈도우 닫기
-    if (window.selectedMarker.infoWindow) {
-      window.selectedMarker.infoWindow.close()
-    }
-
-    // 선택 상태 초기화
-    window.selectedMarker = null
-    window.selectedMarkerData = null
-
-    console.log("마커 선택 해제됨")
   }
 }
 
@@ -107,7 +81,15 @@ function updateOpenInfoWindow() {
       if (closeButton) {
         closeButton.onclick = (e) => {
           e.stopPropagation()
-          clearSelectedMarker()
+          window.selectedMarker.infoWindow.close()
+          window.selectedMarker.setIcon({
+            url: "/public/trashcan.svg",
+            size: new window.naver.maps.Size(30, 40),
+            scaledSize: new window.naver.maps.Size(30, 40),
+            anchor: new window.naver.maps.Point(15, 40),
+          })
+          window.selectedMarker = null
+          window.selectedMarkerData = null
         }
       }
     }, 100)
@@ -148,125 +130,107 @@ function createInfoWindowContent(item) {
         trashCanLng,
       )
       distanceText = `
-  <div style="
-    display: flex;
-    align-items: center;
-    font-size: 13px;
-    margin-top: 4px;
-  ">
-    <img src="/public/distance.svg" style="
-      width: 16px;
-      height: 16px;
-      margin-right: 6px;
-      vertical-align: middle;
-    " alt="거리" />
-    <span style="color: #666;">현재 위치에서</span>
-    <span style="color: #007bff; font-weight: 500; margin-left: 4px;">${distance}</span>
-  </div>
+<div style="
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  margin-top: 4px;
+">
+  <img src="/public/distance.svg" style="
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    vertical-align: middle;
+  " alt="거리" />
+  <span style="color: #666;">현재 위치에서</span>
+  <span style="color: #007bff; font-weight: 500; margin-left: 4px;">${distance}</span>
+</div>
 `
     }
   } else if (!window.currentUserLocation) {
     // 위치 정보가 없을 때 표시할 메시지
     distanceText = `
-  <div style="
-    display: flex;
-    align-items: center;
-    font-size: 13px;
-    margin-top: 4px;
-  ">
-    <img src="/public/distance.svg" style="
-      width: 16px;
-      height: 16px;
-      margin-right: 6px;
-      vertical-align: middle;
-      opacity: 0.5;
-    " alt="거리" />
-    <span style="color: #999; font-style: italic;">위치 정보 가져오는 중...</span>
-  </div>
+<div style="
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  margin-top: 4px;
+">
+  <img src="/public/distance.svg" style="
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    vertical-align: middle;
+    opacity: 0.5;
+  " alt="거리" />
+  <span style="color: #999; font-style: italic;">위치 정보 가져오는 중...</span>
+</div>
 `
   }
 
   // 이미지와 동일한 스타일의 인포윈도우 HTML 생성
   return `
+  <div style="
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    min-width: 280px;
+    max-width: 320px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    position: relative;
+  ">
+    <!-- 닫기 버튼 -->
+    <button class="info-window-close" style="
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #999;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+    ">&times;</button>
+    
+    <!-- 제목 -->
+    <h3 style="
+      margin: 0 30px 16px 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      line-height: 1.3;
+    ">${item["세부 위치"] || "쓰레기통 위치"}</h3>
+    
+    <!-- 주소 정보 -->
     <div style="
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-      padding: 20px;
-      min-width: 280px;
-      max-width: 320px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      position: relative;
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #666;
     ">
-      <!-- 닫기 버튼 -->
-      <button class="info-window-close" style="
-        position: absolute;
-        top: 16px;
-        right: 16px;
-        background: none;
-        border: none;
-        font-size: 20px;
-        color: #999;
-        cursor: pointer;
-        padding: 4px;
-        line-height: 1;
-      ">&times;</button>
-      
-      <!-- 제목 -->
-      <h3 style="
-        margin: 0 30px 16px 0;
-        font-size: 18px;
-        font-weight: 600;
-        color: #333;
-        line-height: 1.3;
-      ">${item["세부 위치"] || "쓰레기통 위치"}</h3>
-      
-      <!-- 주소 정보 -->
-      <div style="
-        display: flex;
-        align-items: center;
-        margin-bottom: 12px;
-        font-size: 14px;
-        color: #666;
-      ">
-        <img src="/public/carbon_location-filled.svg" style="
-          width: 16px;
-          height: 16px;
-          margin-right: 8px;
-          vertical-align: middle;
-        " alt="위치" />
-        <span>${district} > ${shortAddress}</span>
-      </div>
-      
-      <!-- 거리 정보 -->
-      ${distanceText}
-      
-      <!-- 쓰레기통 타입 -->
-      <div style="
-        font-size: 14px;
-        color: #888;
-        margin-top: 8px;
-      ">${formattedTrashType}</div>
+      <img src="/public/carbon_location-filled.svg" style="
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+        vertical-align: middle;
+      " alt="위치" />
+      <span>${district} > ${shortAddress}</span>
     </div>
-  `
-}
-
-// 지도 클릭 이벤트 설정 함수
-function setupMapClickEvent() {
-  const map = window.map
-
-  // 기존 이벤트 리스너 제거
-  if (window.mapClickListener) {
-    window.naver.maps.Event.removeListener(window.mapClickListener)
-  }
-
-  // 새로운 지도 클릭 이벤트 리스너 등록
-  window.mapClickListener = window.naver.maps.Event.addListener(map, "click", (e) => {
-    console.log("지도 클릭됨")
-    clearSelectedMarker()
-  })
-
-  console.log("지도 클릭 이벤트 설정 완료")
+    
+    <!-- 거리 정보 -->
+    ${distanceText}
+    
+    <!-- 쓰레기통 타입 -->
+    <div style="
+      font-size: 14px;
+      color: #888;
+      margin-top: 8px;
+    ">${formattedTrashType}</div>
+  </div>
+`
 }
 
 // 2. 마커 생성 및 클릭 이벤트 함수 - 성능 최적화 버전
@@ -296,9 +260,6 @@ function createMarkersFromCSV() {
   window.naver.maps.Event.addListener(map, "idle", () => {
     updateVisibleAreaMarkers()
   })
-
-  // 지도 클릭 이벤트 설정 (한 번만)
-  setupMapClickEvent()
 
   // 초기 마커 로드
   updateVisibleAreaMarkers()
@@ -384,7 +345,15 @@ function updateVisibleAreaMarkers() {
           if (closeButton) {
             closeButton.onclick = (e) => {
               e.stopPropagation()
-              clearSelectedMarker()
+              infoWindow.close()
+              marker.setIcon({
+                url: "/public/trashcan.svg",
+                size: new window.naver.maps.Size(30, 40),
+                scaledSize: new window.naver.maps.Size(30, 40),
+                anchor: new window.naver.maps.Point(15, 40),
+              })
+              window.selectedMarker = null
+              window.selectedMarkerData = null
             }
           }
         }, 100)
@@ -398,17 +367,37 @@ function updateVisibleAreaMarkers() {
         e.domEvent.preventDefault()
       }
 
-      console.log("마커 클릭됨")
-
       // 같은 마커를 다시 클릭한 경우 선택 해제
       if (window.selectedMarker === marker) {
-        clearSelectedMarker()
+        marker.setIcon({
+          url: "/public/trashcan.svg",
+          size: new window.naver.maps.Size(30, 40),
+          scaledSize: new window.naver.maps.Size(30, 40),
+          anchor: new window.naver.maps.Point(15, 40),
+        })
+        infoWindow.close()
+        window.selectedMarker = null
+        window.selectedMarkerData = null
         return
       }
 
       // 이전에 선택된 마커가 있다면 초기화
       if (window.selectedMarker) {
-        clearSelectedMarker()
+        window.selectedMarker.setIcon({
+          url: "/public/trashcan.svg",
+          size: new window.naver.maps.Size(30, 40),
+          scaledSize: new window.naver.maps.Size(30, 40),
+          anchor: new window.naver.maps.Point(15, 40),
+        })
+
+        if (window.selectedMarker.infoWindow) {
+          window.selectedMarker.infoWindow.close()
+        }
+
+        const locationDetail = document.querySelector(".location-detail")
+        if (locationDetail) {
+          locationDetail.classList.remove("show")
+        }
       }
 
       // 새로운 마커 선택
@@ -445,7 +434,16 @@ function updateVisibleAreaMarkers() {
         if (closeButton) {
           closeButton.onclick = (e) => {
             e.stopPropagation()
-            clearSelectedMarker()
+            infoWindow.close()
+            // 마커를 기본 상태로 되돌림
+            marker.setIcon({
+              url: "/public/trashcan.svg",
+              size: new window.naver.maps.Size(30, 40),
+              scaledSize: new window.naver.maps.Size(30, 40),
+              anchor: new window.naver.maps.Point(15, 40),
+            })
+            window.selectedMarker = null
+            window.selectedMarkerData = null
           }
         }
       }, 100)
@@ -468,4 +466,3 @@ function updateVisibleAreaMarkers() {
 
 // 전역 함수로 노출
 window.updateVisibleAreaMarkers = updateVisibleAreaMarkers
-window.clearSelectedMarker = clearSelectedMarker
