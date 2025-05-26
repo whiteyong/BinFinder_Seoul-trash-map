@@ -257,14 +257,6 @@ body {
   padding: 16px 0 0;
 }
 
-/* Style for the divider */
-.menu-list .divider {
-  height: 1px;
-  background-color: #f0f0f0;
-  margin: 4px 16px 8px;
-  padding: 0;
-  list-style: none;
-}
 
 /* Adjust spacing for the add-to-homescreen item */
 .menu-list .add-to-homescreen {
