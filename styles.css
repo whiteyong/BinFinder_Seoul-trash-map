@@ -367,8 +367,8 @@ body {
 
 .side-menu-header {
   display: flex;
-  justify-content: center; /* space-between에서 center로 변경 */
-  align-items: center;
+  font-weight: 700;
+  text-align: center;
   padding: 24px 20px;
   position: relative;
   min-height: 80px;
