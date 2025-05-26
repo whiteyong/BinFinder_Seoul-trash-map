@@ -1,3 +1,4 @@
+import { Sidebar } from "@/components/ui/sidebar"
 document.addEventListener("DOMContentLoaded", () => {
   const locationDetail = document.getElementById("locationDetail")
   const closeDetail = document.getElementById("closeDetail")
@@ -481,7 +482,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadCSVFromLocalFile()
 
     // 사이드바 초기화
-    // sidebar = new Sidebar() // Sidebar 제거
+    const sidebar = new Sidebar()
 
     // 현위치 버튼 클릭 이벤트 - 브라우저 기본 위치 권한 요청 사용
     currentLocationButton.addEventListener("click", () => {
