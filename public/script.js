@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const menuButton = document.getElementById("menuButton")
   const closeMenu = document.getElementById("closeMenu")
+  const closeMenuFromAbout = document.getElementById("closeMenuFromAbout")
   const sideMenu = document.getElementById("sideMenu")
   const menuOverlay = document.getElementById("menuOverlay")
   const locationDetail = document.getElementById("locationDetail")
@@ -12,6 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const loadingIndicator = document.getElementById("loadingIndicator")
   const totalCount = document.getElementById("totalCount")
   const visibleCount = document.getElementById("visibleCount")
+
+  // 드로워 뷰 관련 요소들
+  const mainMenuView = document.getElementById("mainMenuView")
+  const aboutView = document.getElementById("aboutView")
+  const aboutBinFinder = document.getElementById("aboutBinFinder")
+  const backToMenu = document.getElementById("backToMenu")
 
   let map = null
   window.map = map
@@ -34,6 +41,25 @@ document.addEventListener("DOMContentLoaded", () => {
   currentLocationButton.id = "currentLocationButton"
   currentLocationButton.className = "current-location-button"
   currentLocationButton.innerHTML = '<i class="fas fa-crosshairs"></i>'
+
+  // 드로워 뷰 관리 함수들
+  function showMainMenu() {
+    sideMenu.classList.remove("expanded")
+    mainMenuView.classList.add("active")
+    aboutView.classList.remove("active")
+  }
+
+  function showAboutView() {
+    sideMenu.classList.add("expanded")
+    mainMenuView.classList.remove("active")
+    aboutView.classList.add("active")
+  }
+
+  function closeSideMenu() {
+    sideMenu.classList.remove("show", "expanded")
+    mainMenuView.classList.add("active")
+    aboutView.classList.remove("active")
+  }
 
   function showLoading(show) {
     // 로딩 인디케이터를 항상 숨김 상태로 유지
@@ -481,6 +507,9 @@ document.addEventListener("DOMContentLoaded", () => {
     initMap()
     loadCSVFromLocalFile()
 
+    // 초기 상태 설정
+    showMainMenu()
+
     // 현위치 버튼 클릭 이벤트 - 브라우저 기본 위치 권한 요청 사용
     currentLocationButton.addEventListener("click", () => {
       if (isWatchingLocation) {
@@ -506,6 +535,7 @@ document.addEventListener("DOMContentLoaded", () => {
       menuButton.addEventListener("click", () => {
         if (sideMenu) {
           sideMenu.classList.add("show")
+          showMainMenu()
         }
       })
     }
@@ -513,18 +543,35 @@ document.addEventListener("DOMContentLoaded", () => {
     // 메뉴 닫기 버튼 클릭 이벤트
     if (closeMenu) {
       closeMenu.addEventListener("click", () => {
-        if (sideMenu) {
-          sideMenu.classList.remove("show")
-        }
+        closeSideMenu()
+      })
+    }
+
+    // About 화면에서 메뉴 닫기 버튼 클릭 이벤트
+    if (closeMenuFromAbout) {
+      closeMenuFromAbout.addEventListener("click", () => {
+        closeSideMenu()
       })
     }
 
     // 메뉴 오버레이 클릭 이벤트
     if (menuOverlay) {
       menuOverlay.addEventListener("click", () => {
-        if (sideMenu) {
-          sideMenu.classList.remove("show")
-        }
+        closeSideMenu()
+      })
+    }
+
+    // BinFinder 소개 클릭 이벤트
+    if (aboutBinFinder) {
+      aboutBinFinder.addEventListener("click", () => {
+        showAboutView()
+      })
+    }
+
+    // 뒤로가기 버튼 클릭 이벤트
+    if (backToMenu) {
+      backToMenu.addEventListener("click", () => {
+        showMainMenu()
       })
     }
 
@@ -570,34 +617,6 @@ document.addEventListener("DOMContentLoaded", () => {
         filterMarkers()
       })
     })
-
-    // BinFinder 소개 모달 관련 이벤트
-    const aboutBinFinder = document.getElementById("aboutBinFinder")
-    const aboutModal = document.getElementById("aboutModal")
-    const closeAboutModal = document.getElementById("closeAboutModal")
-
-    if (aboutBinFinder && aboutModal && closeAboutModal) {
-      // BinFinder 소개 클릭 이벤트
-      aboutBinFinder.addEventListener("click", () => {
-        aboutModal.classList.add("show")
-        // 사이드 메뉴 닫기
-        if (sideMenu) {
-          sideMenu.classList.remove("show")
-        }
-      })
-
-      // 모달 닫기 버튼 클릭 이벤트
-      closeAboutModal.addEventListener("click", () => {
-        aboutModal.classList.remove("show")
-      })
-
-      // 모달 배경 클릭 시 닫기
-      aboutModal.addEventListener("click", (e) => {
-        if (e.target === aboutModal) {
-          aboutModal.classList.remove("show")
-        }
-      })
-    }
 
     // 개발자 모드 설정
     setupDevMode()

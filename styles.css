@@ -246,46 +246,59 @@ body {
   background-color: white;
   padding: 0;
   transform: translateX(100%);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, width 0.3s ease, max-width 0.3s ease;
   pointer-events: auto;
   display: flex;
   flex-direction: column;
   z-index: 2;
 }
 
+/* 드로워 확장 상태 */
+.side-menu.expanded .side-menu-content {
+  width: 100%;
+  max-width: 100%;
+}
+
 .menu-container {
   padding: 16px 0 0;
 }
 
-/* Adjust spacing for the add-to-homescreen item */
-.menu-list .add-to-homescreen {
-  padding-bottom: 0;
+/* 메뉴 뷰 관리 */
+.menu-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
 }
 
-/* Add margin below '바로가기 추가' */
-.menu-list li.add-to-homescreen {
-  font-size: 14px; /* 폰트 사이즈 14px 추가 */
-  /* 호버 영역 확보를 위해 패딩 조정 */
-  padding: 12px 16px 12px 16px;
+.menu-view.active {
+  transform: translateX(0);
 }
 
 /* BinFinder 소개 항목 폰트 사이즈 */
-.menu-list li:nth-child(2) {
+.menu-list li:nth-child(1) {
   font-size: 14px;
 }
 
 /* 서비스 이용약관 항목 폰트 사이즈 */
-.menu-list li:nth-child(3) {
+.menu-list li:nth-child(2) {
   font-size: 14px;
 }
 
 /* 위치기반서비스 이용약관 항목 폰트 사이즈 */
-.menu-list li:nth-child(4) {
+.menu-list li:nth-child(3) {
   font-size: 14px;
 }
 
 /* 개인정보 처리방침 항목 폰트 사이즈 */
-.menu-list li:nth-child(5) {
+.menu-list li:nth-child(4) {
   font-size: 14px;
 }
 
@@ -334,6 +347,7 @@ body {
   padding: 24px 20px;
   position: relative;
   min-height: 80px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .side-menu-header .logo-text {
@@ -346,8 +360,51 @@ body {
   width: 100%;
 }
 
+.side-menu-header .header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
 .side-menu-header .close-button {
-  display: none !important; /* 닫기 버튼 완전히 숨김 */
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #666;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.side-menu-header .close-button:hover {
+  background-color: #f5f5f5;
+}
+
+.back-button {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #666;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #f5f5f5;
 }
 
 /* 기존 .logo-image 스타일 제거하고 .logo-text로 대체 */
@@ -381,6 +438,23 @@ body {
 /* Style for the divider */
 .menu-list .divider {
   display: none;
+}
+
+/* About content styling */
+.about-content {
+  padding: 24px;
+  flex: 1;
+}
+
+.about-content p {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.about-content p:last-child {
+  margin-bottom: 0;
 }
 
 .district-filter {
@@ -719,81 +793,4 @@ body.dev-mode .dev-only {
 
 .direction-button:hover {
   background-color: #0070e0;
-}
-
-/* BinFinder 소개 모달 스타일 */
-.about-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-}
-
-.about-modal.show {
-  opacity: 1;
-  visibility: visible;
-}
-
-.about-modal-content {
-  background-color: white;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
-  max-height: 80vh;
-  overflow-y: auto;
-  position: relative;
-}
-
-.about-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.about-modal-header h2 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-}
-
-.about-close-button {
-  background: none;
-  border: none;
-  font-size: 18px;
-  color: #666;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-.about-close-button:hover {
-  background-color: #f5f5f5;
-}
-
-.about-modal-body {
-  padding: 24px;
-}
-
-.about-modal-body p {
-  margin: 0 0 16px 0;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #333;
-}
-
-.about-modal-body p:last-child {
-  margin-bottom: 0;
 }

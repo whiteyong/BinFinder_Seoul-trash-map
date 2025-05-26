@@ -453,38 +453,42 @@
     <!-- 사이드 메뉴 (처음에는 숨겨져 있음) -->
     <div id="sideMenu" class="side-menu">
       <div class="side-menu-content">
-        <div class="side-menu-header">
-          <span class="logo-text">BinFinder</span>
-          <button id="closeMenu" class="close-button">
-            <i class="fas fa-times"></i>
-          </button>
+        <!-- 기본 메뉴 화면 -->
+        <div id="mainMenuView" class="menu-view">
+          <div class="side-menu-header">
+            <span class="logo-text">BinFinder</span>
+            <button id="closeMenu" class="close-button">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="menu-container">
+            <ul class="menu-list">
+              <li id="aboutBinFinder">BinFinder 소개</li>
+              <li>서비스 이용약관</li>
+              <li>위치기반서비스 이용약관</li>
+              <li>개인정보 처리방침</li>
+            </ul>
+          </div>
         </div>
-        <div class="menu-container">
-          <ul class="menu-list">
-            <li id="aboutBinFinder">BinFinder 소개</li>
-            <li>서비스 이용약관</li>
-            <li>위치기반서비스 이용약관</li>
-            <li>개인정보 처리방침</li>
-          </ul>
+
+        <!-- BinFinder 소개 화면 -->
+        <div id="aboutView" class="menu-view about-view">
+          <div class="side-menu-header">
+            <button id="backToMenu" class="back-button">
+              <i class="fas fa-arrow-left"></i>
+            </button>
+            <span class="header-title">BinFinder</span>
+            <button id="closeMenuFromAbout" class="close-button">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="about-content">
+            <p>BinFinder는 한국 여행자들의 더욱 쾌적한 여행을 돕고자<br>각 지역의 길거리 쓰레기통 위치를 제공하고 있습니다.</p>
+            <p>단, 일부 지역의 위치 정보는 정부 단체의 데이터 제공 제한으로<br>인하여 표시되지 않을 수 있습니다.</p>
+          </div>
         </div>
       </div>
       <div id="menuOverlay" class="side-menu-overlay"></div>
-    </div>
-
-    <!-- BinFinder 소개 모달 -->
-    <div id="aboutModal" class="about-modal">
-      <div class="about-modal-content">
-        <div class="about-modal-header">
-          <h2>BinFinder</h2>
-          <button id="closeAboutModal" class="about-close-button">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="about-modal-body">
-          <p>BinFinder는 한국 여행자들의 더욱 쾌적한 여행을 돕고자<br>각 지역의 길거리 쓰레기통 위치를 제공하고 있습니다.</p>
-          <p>단, 일부 지역의 위치 정보는 정부 단체의 데이터 제공 제한으로<br>인하여 표시되지 않을 수 있습니다.</p>
-        </div>
-      </div>
     </div>
 
     <!-- GPS 권한 요청 모달 -->
