@@ -1,53 +1,54 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const menuButton = document.getElementById("menuButton");
-  const closeMenu = document.getElementById("closeMenu");
-  const sideMenu = document.getElementById("sideMenu");
-  const menuOverlay = document.getElementById("menuOverlay");
-  const locationDetail = document.getElementById("locationDetail");
-  const closeDetail = document.getElementById("closeDetail");
-  const searchInput = document.getElementById("searchInput");
-  const searchButton = document.getElementById("searchButton");
-  const filterButtons = document.querySelectorAll(".filter-button");
-  const districtFilter = document.getElementById("districtFilter");
-  const loadingIndicator = document.getElementById("loadingIndicator");
-  const totalCount = document.getElementById("totalCount");
-  const visibleCount = document.getElementById("visibleCount");
+document.addEventListener("DOMContentLoaded", () => {
+  const menuButton = document.getElementById("menuButton")
+  const closeMenu = document.getElementById("closeMenu")
+  const sideMenu = document.getElementById("sideMenu")
+  const menuOverlay = document.getElementById("menuOverlay")
+  const locationDetail = document.getElementById("locationDetail")
+  const closeDetail = document.getElementById("closeDetail")
+  const searchInput = document.getElementById("searchInput")
+  const searchButton = document.getElementById("searchButton")
+  const filterButtons = document.querySelectorAll(".filter-button")
+  const districtFilter = document.getElementById("districtFilter")
+  const loadingIndicator = document.getElementById("loadingIndicator")
+  const totalCount = document.getElementById("totalCount")
+  const visibleCount = document.getElementById("visibleCount")
 
-  let map = null;
-  window.map = map;
-  let markers = [];
-  window.markers = markers;
-  let trashCanData = [];
-  let currentFilter = "all";
-  let currentDistrict = "all";
-  let visibleMarkers = 0;
-  let selectedMarker = null; // 현재 선택된 마커
-  window.selectedMarker = selectedMarker;
-  let currentLocationMarker = null; // 현재 위치 마커
-  let isWatchingLocation = false; // 위치 추적 활성화 여부
-  let watchId = null; // 위치 추적 ID
-  let defaultCenter = new naver.maps.LatLng(37.5665, 126.978); // 서울 중심 좌표(기본값)
+  let map = null
+  window.map = map
+  let markers = []
+  window.markers = markers
+  let trashCanData = []
+  let currentFilter = "all"
+  let currentDistrict = "all"
+  let visibleMarkers = 0
+  let selectedMarker = null // 현재 선택된 마커
+  window.selectedMarker = selectedMarker
+  let currentLocationMarker = null // 현재 위치 마커
+  let isWatchingLocation = false // 위치 추적 활성화 여부
+  let watchId = null // 위치 추적 ID
+  const defaultCenter = new window.naver.maps.LatLng(37.5665, 126.978) // 서울 중심 좌표(기본값)
+  let selectedMarkerCoords = null // 선택된 마커의 좌표
 
   // 현위치 버튼 생성 및 추가
-  const currentLocationButton = document.createElement("button");
-  currentLocationButton.id = "currentLocationButton";
-  currentLocationButton.className = "current-location-button";
-  currentLocationButton.innerHTML = '<i class="fas fa-crosshairs"></i>';
+  const currentLocationButton = document.createElement("button")
+  currentLocationButton.id = "currentLocationButton"
+  currentLocationButton.className = "current-location-button"
+  currentLocationButton.innerHTML = '<i class="fas fa-crosshairs"></i>'
 
   function showLoading(show) {
     // 로딩 인디케이터를 항상 숨김 상태로 유지
     if (loadingIndicator) {
-      loadingIndicator.style.display = "none";
+      loadingIndicator.style.display = "none"
     }
   }
 
   function updateVisibleMarkers() {
-    visibleMarkers = markers.filter((marker) => marker.visible).length;
+    visibleMarkers = markers.filter((marker) => marker.visible).length
     if (visibleCount) {
-      visibleCount.textContent = `화면에 ${visibleMarkers}개 표시 중`;
+      visibleCount.textContent = `화면에 ${visibleMarkers}개 표시 중`
     }
-    window.updateVisibleMarkers = updateVisibleMarkers;
-    console.log("✅ 마커 필터링 완료 - 현재 화면 표시 마커:", visibleMarkers);
+    window.updateVisibleMarkers = updateVisibleMarkers
+    console.log("✅ 마커 필터링 완료 - 현재 화면 표시 마커:", visibleMarkers)
   }
 
   // 정보 창 위치 업데이트 함수 (네이버 지도 InfoWindow를 사용하므로 이제는 사용하지 않음)
@@ -57,125 +58,121 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function clearMarkers() {
     markers.forEach((markerObj) => {
-      markerObj.marker.setMap(null);
-    });
-    markers = [];
-    window.markers = markers;
-    console.log("🧹 기존 마커 제거 완료");
+      markerObj.marker.setMap(null)
+    })
+    markers = []
+    window.markers = markers
+    console.log("🧹 기존 마커 제거 완료")
   }
-  window.clearMarkers = clearMarkers;
+  window.clearMarkers = clearMarkers
 
   function parseCSVRow(row) {
-    const result = [];
-    let insideQuotes = false;
-    let currentValue = "";
+    const result = []
+    let insideQuotes = false
+    let currentValue = ""
 
     for (let i = 0; i < row.length; i++) {
-      const char = row[i];
+      const char = row[i]
 
       if (char === '"') {
-        insideQuotes = !insideQuotes;
+        insideQuotes = !insideQuotes
       } else if (char === "," && !insideQuotes) {
-        result.push(currentValue);
-        currentValue = "";
+        result.push(currentValue)
+        currentValue = ""
       } else {
-        currentValue += char;
+        currentValue += char
       }
     }
-    result.push(currentValue);
-    return result;
+    result.push(currentValue)
+    return result
   }
 
   function populateDistrictFilter(districts) {
-    if (!districtFilter) return;
+    if (!districtFilter) return
 
-    districtFilter.innerHTML = '<option value="all">전체 구</option>';
+    districtFilter.innerHTML = '<option value="all">전체 구</option>'
     districts.forEach((district) => {
-      const option = document.createElement("option");
-      option.value = district;
-      option.textContent = district;
-      districtFilter.appendChild(option);
-    });
+      const option = document.createElement("option")
+      option.value = district
+      option.textContent = district
+      districtFilter.appendChild(option)
+    })
   }
 
   function parseCSVAndLoadData(csvText) {
     try {
-      console.log("📦 CSV 로딩 시작");
-      showLoading(true);
-      const rows = csvText.split("\n");
-      const headers = rows[0].split(",");
-      console.log("📋 헤더 확인:", headers);
+      console.log("📦 CSV 로딩 시작")
+      showLoading(true)
+      const rows = csvText.split("\n")
+      const headers = rows[0].split(",")
+      console.log("📋 헤더 확인:", headers)
 
-      const data = [];
-      const districts = new Set();
+      const data = []
+      const districts = new Set()
 
       for (let i = 1; i < rows.length; i++) {
-        if (!rows[i].trim()) continue;
-        const values = parseCSVRow(rows[i]);
-        if (values.length < headers.length) continue;
+        if (!rows[i].trim()) continue
+        const values = parseCSVRow(rows[i])
+        if (values.length < headers.length) continue
 
-        const item = {};
+        const item = {}
         for (let j = 0; j < headers.length; j++) {
-          item[headers[j].trim()] = values[j].trim();
+          item[headers[j].trim()] = values[j].trim()
         }
 
         if (item["구"]) {
-          districts.add(item["구"]);
+          districts.add(item["구"])
         }
 
-        data.push(item);
+        data.push(item)
       }
 
-      trashCanData = data;
-      window.trashCanData = trashCanData;
-      console.log("✅ CSV 파싱 완료 - 쓰레기통 개수:", trashCanData.length);
+      trashCanData = data
+      window.trashCanData = trashCanData
+      console.log("✅ CSV 파싱 완료 - 쓰레기통 개수:", trashCanData.length)
 
       if (totalCount) {
-        totalCount.textContent = `총 ${data.length}개의 쓰레기통`;
+        totalCount.textContent = `총 ${data.length}개의 쓰레기통`
       }
 
-      populateDistrictFilter(Array.from(districts).sort());
+      populateDistrictFilter(Array.from(districts).sort())
 
       // 지오코딩 대신 CSV의 위도/경도 데이터를 사용하여 마커 생성
       // createMarkersFromCSV();
       if (window.createMarkersFromCSV) {
-        window.createMarkersFromCSV();
+        window.createMarkersFromCSV()
       }
 
       // 페이지 로드 시 위치 권한 요청
-      requestLocationPermission();
+      requestLocationPermission()
     } catch (error) {
-      console.error("❌ CSV 파싱 중 오류 발생:", error);
-      alert("CSV 파싱에 실패했습니다.");
+      console.error("❌ CSV 파싱 중 오류 발생:", error)
+      alert("CSV 파싱에 실패했습니다.")
     } finally {
-      showLoading(false);
+      showLoading(false)
     }
   }
 
   function createMarkerElement(markerType) {
-    const markerElement = document.createElement("div");
-    markerElement.className = `marker ${markerType}`;
-    markerElement.style.width = "24px";
-    markerElement.style.height = "24px";
-    markerElement.style.borderRadius = "50%";
-    markerElement.style.border = "2px solid white";
+    const markerElement = document.createElement("div")
+    markerElement.className = `marker ${markerType}`
+    markerElement.style.width = "24px"
+    markerElement.style.height = "24px"
+    markerElement.style.borderRadius = "50%"
+    markerElement.style.border = "2px solid white"
     markerElement.style.backgroundColor =
-      markerType === "trashcan"
-        ? "#188FFF"
-        : markerType === "seperatecan"
-        ? "#188FFF"
-        : "#188FFF";
-    return markerElement;
+      markerType === "trashcan" ? "#188FFF" : markerType === "seperatecan" ? "#188FFF" : "#188FFF"
+    return markerElement
   }
 
   async function loadCSVFromLocalFile() {
     try {
-      const response = await fetch("./trashCanData.csv");
-      const csvText = await response.text();
-      parseCSVAndLoadData(csvText);
+      const response = await fetch("./trashCanData.csv")
+      const csvText = await response.text()
+      parseCSVAndLoadData(csvText)
     } catch (error) {
-      console.error("❌ 로컬 CSV 불러오기 실패:", error);
-      alert("CSV 파일을 불러오는 데 실패했습니다.");
+      console.error("❌ 로컬 CSV 불러오기 실패:", error)
+      alert("CSV 파일을 불러오는 데 실패했습니다.")
     }
   }
 
@@ -187,42 +184,42 @@ document.addEventListener("DOMContentLoaded", function () {
       maxZoom: 20, // 최대 확대 레벨(더 크게 확대 불가)
       zoomControl: true,
       zoomControlOptions: {
-        position: naver.maps.Position.RIGHT_CENTER,
+        position: window.naver.maps.Position.RIGHT_CENTER,
       },
-    };
+    }
 
-    map = new naver.maps.Map("map", mapOptions);
-    window.map = map;
-    console.log("🗺 지도 초기화 완료");
+    map = new window.naver.maps.Map("map", mapOptions)
+    window.map = map
+    console.log("🗺 지도 초기화 완료")
 
     // 지도 클릭 이벤트 리스너
-    naver.maps.Event.addListener(map, "click", function () {
+    window.naver.maps.Event.addListener(map, "click", () => {
       // 선택된 마커의 아이콘 초기화
       if (window.selectedMarker) {
         window.selectedMarker.setIcon({
           url: "/public/trashcan.svg",
-          size: new naver.maps.Size(30, 40),
-          scaledSize: new naver.maps.Size(30, 40),
-          anchor: new naver.maps.Point(15, 40),
-        });
-        window.selectedMarker.infoWindow.close();
-        window.selectedMarker = null;
-        selectedMarkerCoords = null;
+          size: new window.naver.maps.Size(30, 40),
+          scaledSize: new window.naver.maps.Size(30, 40),
+          anchor: new window.naver.maps.Point(15, 40),
+        })
+        window.selectedMarker.infoWindow.close()
+        window.selectedMarker = null
+        selectedMarkerCoords = null
       }
-    });
+    })
 
     // 현위치 버튼 추가
-    const mapContainer = document.querySelector(".map-container");
+    const mapContainer = document.querySelector(".map-container")
     if (mapContainer) {
-      mapContainer.appendChild(currentLocationButton);
+      mapContainer.appendChild(currentLocationButton)
     } else {
-      console.error("지도 컨테이너를 찾을 수 없습니다.");
+      console.error("지도 컨테이너를 찾을 수 없습니다.")
     }
 
     // 마커 개수 업데이트
-    naver.maps.Event.addListener(map, "idle", function () {
-      updateVisibleMarkers();
-    });
+    window.naver.maps.Event.addListener(map, "idle", () => {
+      updateVisibleMarkers()
+    })
   }
 
   // 페이지 로드 시 위치 권한 요청 함수
@@ -232,45 +229,45 @@ document.addEventListener("DOMContentLoaded", function () {
       // 브라우저 기본 위치 권한 요청 UI 사용
       navigator.geolocation.getCurrentPosition(
         // 성공 콜백
-        function (position) {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          const currentPos = new naver.maps.LatLng(lat, lng); // 여기서 lat, lng 사용
+        (position) => {
+          const lat = position.coords.latitude
+          const lng = position.coords.longitude
+          const currentPos = new window.naver.maps.LatLng(lat, lng) // 여기서 lat, lng 사용
 
           // 지도 이동
-          map.setCenter(currentPos);
-          map.setZoom(16);
+          map.setCenter(currentPos)
+          map.setZoom(16)
 
           // 현위치 마커 생성
-          createCurrentLocationMarker(currentPos, position.coords.accuracy);
+          createCurrentLocationMarker(currentPos, position.coords.accuracy)
 
           // 근처 쓰레기통 개수 업데이트
-          updateNearbyTrashCount();
+          updateNearbyTrashCount()
 
-          console.log("✅ 위치 권한 허용됨, 현재 위치:", lat, lng);
+          console.log("✅ 위치 권한 허용됨, 현재 위치:", lat, lng)
         },
         // 오류 콜백
-        function (error) {
-          console.log("❌ 위치 권한 거부됨 또는 오류 발생:", error.code);
+        (error) => {
+          console.log("❌ 위치 권한 거부됨 또는 오류 발생:", error.code)
 
           // 위치 권한이 거부되었거나 오류가 발생한 경우 기본 위치 사용
-          map.setCenter(defaultCenter);
-          map.setZoom(13);
+          map.setCenter(defaultCenter)
+          map.setZoom(13)
 
           // 오류 코드에 따른 처리
           switch (error.code) {
             case error.PERMISSION_DENIED:
-              console.log("사용자가 위치 정보 제공을 거부했습니다.");
-              break;
+              console.log("사용자가 위치 정보 제공을 거부했습니다.")
+              break
             case error.POSITION_UNAVAILABLE:
-              console.log("위치 정보를 사용할 수 없습니다.");
-              break;
+              console.log("위치 정보를 사용할 수 없습니다.")
+              break
             case error.TIMEOUT:
-              console.log("위치 정보 요청 시간이 초과되었습니다.");
-              break;
+              console.log("위치 정보 요청 시간이 초과되었습니다.")
+              break
             case error.UNKNOWN_ERROR:
-              console.log("알 수 없는 오류가 발생했습니다.");
-              break;
+              console.log("알 수 없는 오류가 발생했습니다.")
+              break
           }
         },
         // 옵션
@@ -278,13 +275,13 @@ document.addEventListener("DOMContentLoaded", function () {
           enableHighAccuracy: true, // 높은 정확도 요청
           timeout: 10000, // 10초 타임아웃
           maximumAge: 0, // 캐시된 위치 정보를 사용하지 않음
-        }
-      );
+        },
+      )
     } else {
       // geolocation API를 지원하지 않는 브라우저
-      console.log("❌ 이 브라우저는 위치 정보를 지원하지 않습니다.");
-      map.setCenter(defaultCenter);
-      map.setZoom(13);
+      console.log("❌ 이 브라우저는 위치 정보를 지원하지 않습니다.")
+      map.setCenter(defaultCenter)
+      map.setZoom(13)
     }
   }
 
@@ -293,25 +290,25 @@ document.addEventListener("DOMContentLoaded", function () {
     // 이미 현위치 마커가 있으면 제거
     if (currentLocationMarker !== null) {
       if (currentLocationMarker.accuracyCircle) {
-        currentLocationMarker.accuracyCircle.setMap(null);
+        currentLocationMarker.accuracyCircle.setMap(null)
       }
-      currentLocationMarker.setMap(null);
+      currentLocationMarker.setMap(null)
     }
 
     // 현위치 마커 생성
-    currentLocationMarker = new naver.maps.Marker({
+    currentLocationMarker = new window.naver.maps.Marker({
       position: position,
       map: map,
       icon: {
         content:
           '<div style="width: 20px; height: 20px; background-color: #188FFF; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>',
-        anchor: new naver.maps.Point(10, 10),
+        anchor: new window.naver.maps.Point(10, 10),
       },
       zIndex: 1000,
-    });
+    })
 
     // 정확도 표시 원 추가
-    const accuracyCircle = new naver.maps.Circle({
+    const accuracyCircle = new window.naver.maps.Circle({
       map: map,
       center: position,
       radius: accuracy,
@@ -320,336 +317,322 @@ document.addEventListener("DOMContentLoaded", function () {
       strokeWeight: 1,
       fillColor: "#188FFF",
       fillOpacity: 0.1,
-    });
+    })
 
     // 정확도 원도 함께 업데이트하기 위해 저장
-    currentLocationMarker.accuracyCircle = accuracyCircle;
+    currentLocationMarker.accuracyCircle = accuracyCircle
 
     // 위치 추적 활성화 상태로 변경
-    isWatchingLocation = true;
-    currentLocationButton.classList.add("active");
+    isWatchingLocation = true
+    currentLocationButton.classList.add("active")
   }
 
   // 위치 추적 시작
   function startWatchingLocation() {
-    showLoading(true);
+    showLoading(true)
 
     if (navigator.geolocation) {
       // 위치 추적 시작 - 브라우저 기본 위치 권한 요청 사용
       watchId = navigator.geolocation.watchPosition(
-        function (position) {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          const currentPos = new naver.maps.LatLng(lat, lng);
+        (position) => {
+          const lat = position.coords.latitude
+          const lng = position.coords.longitude
+          const currentPos = new window.naver.maps.LatLng(lat, lng)
 
           // 첫 위치 수신 시 지도 이동
           if (!isWatchingLocation) {
-            map.setCenter(currentPos);
-            map.setZoom(16);
+            map.setCenter(currentPos)
+            map.setZoom(16)
           }
 
           // 현위치 마커 생성 또는 업데이트
           if (currentLocationMarker === null) {
             // 마커 생성
-            createCurrentLocationMarker(currentPos, position.coords.accuracy);
+            createCurrentLocationMarker(currentPos, position.coords.accuracy)
           } else {
             // 마커 위치 업데이트
-            currentLocationMarker.setPosition(currentPos);
+            currentLocationMarker.setPosition(currentPos)
 
             // 정확도 원 업데이트
             if (currentLocationMarker.accuracyCircle) {
-              currentLocationMarker.accuracyCircle.setCenter(currentPos);
-              currentLocationMarker.accuracyCircle.setRadius(
-                position.coords.accuracy
-              );
+              currentLocationMarker.accuracyCircle.setCenter(currentPos)
+              currentLocationMarker.accuracyCircle.setRadius(position.coords.accuracy)
             }
           }
 
           // 상태 업데이트
-          isWatchingLocation = true;
-          currentLocationButton.classList.add("active");
-          showLoading(false);
+          isWatchingLocation = true
+          currentLocationButton.classList.add("active")
+          showLoading(false)
 
           // 근처 쓰레기통 개수 업데이트
-          updateNearbyTrashCount();
+          updateNearbyTrashCount()
         },
-        function (error) {
-          showLoading(false);
-          console.error("위치 정보 오류:", error);
+        (error) => {
+          showLoading(false)
+          console.error("위치 정보 오류:", error)
 
-          let errorMessage = "위치 정보를 가져오는데 실패했습니다.";
+          let errorMessage = "위치 정보를 가져오는데 실패했습니다."
           switch (error.code) {
             case error.PERMISSION_DENIED:
-              errorMessage =
-                "위치 정보 접근이 거부되었습니다. 브라우저 설정에서 위치 권한을 허용해주세요.";
-              break;
+              errorMessage = "위치 정보 접근이 거부되었습니다. 브라우저 설정에서 위치 권한을 허용해주세요."
+              break
             case error.POSITION_UNAVAILABLE:
-              errorMessage = "위치 정보를 사용할 수 없습니다.";
-              break;
+              errorMessage = "위치 정보를 사용할 수 없습니다."
+              break
             case error.TIMEOUT:
-              errorMessage = "위치 정보 요청 시간이 초과되었습니다.";
-              break;
+              errorMessage = "위치 정보 요청 시간이 초과되었습니다."
+              break
           }
 
-          alert(errorMessage);
-          stopWatchingLocation();
+          alert(errorMessage)
+          stopWatchingLocation()
 
           // 위치 권한이 거부된 경우 기본 위치로 이동
-          map.setCenter(defaultCenter);
-          map.setZoom(13);
+          map.setCenter(defaultCenter)
+          map.setZoom(13)
         },
         {
           enableHighAccuracy: true,
           maximumAge: 0,
           timeout: 10000,
-        }
-      );
+        },
+      )
     } else {
-      showLoading(false);
-      alert("이 브라우저에서는 위치 정보를 지원하지 않습니다.");
+      showLoading(false)
+      alert("이 브라우저에서는 위치 정보를 지원하지 않습니다.")
 
       // 위치 정보를 지원하지 않는 경우 기본 위치로 이동
-      map.setCenter(defaultCenter);
-      map.setZoom(13);
+      map.setCenter(defaultCenter)
+      map.setZoom(13)
     }
   }
 
   // 위치 추적 중지
   function stopWatchingLocation() {
     if (watchId !== null) {
-      navigator.geolocation.clearWatch(watchId);
-      watchId = null;
+      navigator.geolocation.clearWatch(watchId)
+      watchId = null
     }
 
     // 현위치 마커 제거
     if (currentLocationMarker !== null) {
       // 정확도 원 제거
       if (currentLocationMarker.accuracyCircle) {
-        currentLocationMarker.accuracyCircle.setMap(null);
+        currentLocationMarker.accuracyCircle.setMap(null)
       }
 
       // 마커 제거
-      currentLocationMarker.setMap(null);
-      currentLocationMarker = null;
+      currentLocationMarker.setMap(null)
+      currentLocationMarker = null
     }
 
     // 상태 업데이트
-    isWatchingLocation = false;
-    currentLocationButton.classList.remove("active");
+    isWatchingLocation = false
+    currentLocationButton.classList.remove("active")
   }
 
   // 근처 쓰레기통 개수 업데이트 함수 수정
   function updateNearbyTrashCount() {
     // 현재 위치를 기준으로 10km 이내의 쓰레기통 개수 계산
     if (currentLocationMarker && markers.length > 0) {
-      const currentPos = currentLocationMarker.getPosition();
-      let count = 0;
+      const currentPos = currentLocationMarker.getPosition()
+      let count = 0
 
       markers.forEach((markerObj) => {
-        const markerPos = markerObj.marker.getPosition();
+        const markerPos = markerObj.marker.getPosition()
 
         // 두 지점 간의 거리 계산 (Haversine 공식 사용)
-        const distance = calculateDistance(
-          currentPos.lat(),
-          currentPos.lng(),
-          markerPos.lat(),
-          markerPos.lng()
-        );
+        const distance = calculateDistance(currentPos.lat(), currentPos.lng(), markerPos.lat(), markerPos.lng())
 
         // 10km = 10000m 이내인지 확인
         if (distance <= 10000) {
-          count++;
+          count++
         }
-      });
+      })
 
       // 개수 업데이트
-      const nearbyTrashCount = document.getElementById("nearbyTrashCount");
+      const nearbyTrashCount = document.getElementById("nearbyTrashCount")
       if (nearbyTrashCount) {
-        nearbyTrashCount.textContent = count;
+        nearbyTrashCount.textContent = count
       }
     }
   }
 
   // 두 지점 간의 거리를 계산하는 함수 (Haversine 공식)
   function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371000; // 지구 반지름 (미터)
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
+    const R = 6371000 // 지구 반지름 (미터)
+    const dLat = toRad(lat2 - lat1)
+    const dLon = toRad(lon2 - lon1)
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat1)) *
-        Math.cos(toRad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-    return distance; // 미터 단위 거리 반환
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+    const distance = R * c
+    return distance // 미터 단위 거리 반환
   }
 
   // 각도를 라디안으로 변환하는 함수
   function toRad(degrees) {
-    return degrees * (Math.PI / 180);
+    return degrees * (Math.PI / 180)
   }
 
   function init() {
-    initMap();
-    loadCSVFromLocalFile();
+    initMap()
+    loadCSVFromLocalFile()
 
     // 현위치 버튼 클릭 이벤트 - 브라우저 기본 위치 권한 요청 사용
-    currentLocationButton.addEventListener("click", function () {
+    currentLocationButton.addEventListener("click", () => {
       if (isWatchingLocation) {
         // 이미 위치 추적 중이면 중지
-        stopWatchingLocation();
+        stopWatchingLocation()
       } else {
         // 브라우저 기본 위치 권한 요청 사용
-        startWatchingLocation();
+        startWatchingLocation()
       }
-    });
+    })
 
     // 닫기 버튼 클릭 시 상세 정보 패널 닫기
     if (closeDetail) {
-      closeDetail.addEventListener("click", function () {
+      closeDetail.addEventListener("click", () => {
         if (locationDetail) {
-          locationDetail.classList.remove("show");
+          locationDetail.classList.remove("show")
         }
-      });
+      })
     }
 
     // 메뉴 버튼 클릭 이벤트
     if (menuButton) {
-      menuButton.addEventListener("click", function () {
+      menuButton.addEventListener("click", () => {
         if (sideMenu) {
-          sideMenu.classList.add("show");
+          sideMenu.classList.add("show")
         }
-      });
+      })
     }
 
     // 메뉴 닫기 버튼 클릭 이벤트
     if (closeMenu) {
-      closeMenu.addEventListener("click", function () {
+      closeMenu.addEventListener("click", () => {
         if (sideMenu) {
-          sideMenu.classList.remove("show");
+          sideMenu.classList.remove("show")
         }
-      });
+      })
     }
 
     // 메뉴 오버레이 클릭 이벤트
     if (menuOverlay) {
-      menuOverlay.addEventListener("click", function () {
+      menuOverlay.addEventListener("click", () => {
         if (sideMenu) {
-          sideMenu.classList.remove("show");
+          sideMenu.classList.remove("show")
         }
-      });
+      })
     }
 
     // 구 필터 변경 이벤트
     if (districtFilter) {
       districtFilter.addEventListener("change", function () {
-        currentDistrict = this.value;
-        filterMarkers();
-      });
+        currentDistrict = this.value
+        filterMarkers()
+      })
     }
 
     // 검색 버튼 클릭 이벤트
     if (searchButton && searchInput) {
-      searchButton.addEventListener("click", function () {
-        const searchText = searchInput.value.trim().toLowerCase();
+      searchButton.addEventListener("click", () => {
+        const searchText = searchInput.value.trim().toLowerCase()
         if (searchText) {
-          searchMarkers(searchText);
+          searchMarkers(searchText)
         }
-      });
+      })
 
       // 엔터 키 이벤트
-      searchInput.addEventListener("keypress", function (e) {
+      searchInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
-          const searchText = searchInput.value.trim().toLowerCase();
+          const searchText = searchInput.value.trim().toLowerCase()
           if (searchText) {
-            searchMarkers(searchText);
+            searchMarkers(searchText)
           }
         }
-      });
+      })
     }
 
     // 필터 버튼 클릭 이벤트
     filterButtons.forEach((button) => {
       button.addEventListener("click", function () {
         // 이전 활성 버튼 비활성화
-        filterButtons.forEach((btn) => btn.classList.remove("active"));
+        filterButtons.forEach((btn) => btn.classList.remove("active"))
 
         // 현재 버튼 활성화
-        this.classList.add("active");
+        this.classList.add("active")
 
         // 필터 적용
-        currentFilter = this.dataset.filter;
-        filterMarkers();
-      });
-    });
+        currentFilter = this.dataset.filter
+        filterMarkers()
+      })
+    })
 
     // 개발자 모드 설정
-    setupDevMode();
+    setupDevMode()
   }
 
   // 마커 필터링 함수
   function filterMarkers() {
     markers.forEach((markerObj) => {
-      let visible = true;
+      let visible = true
 
       // 구 필터 적용
-      if (
-        currentDistrict !== "all" &&
-        markerObj.data["구"] !== currentDistrict
-      ) {
-        visible = false;
+      if (currentDistrict !== "all" && markerObj.data["구"] !== currentDistrict) {
+        visible = false
       }
 
       // 쓰레기통 유형 필터 적용
       if (currentFilter !== "all") {
-        const trashTypeText = markerObj.data["수거 쓰레기 종류"] || "";
+        const trashTypeText = markerObj.data["수거 쓰레기 종류"] || ""
         if (!trashTypeText.includes(currentFilter)) {
-          visible = false;
+          visible = false
         }
       }
 
       // 마커 표시/숨김 설정
-      markerObj.marker.setVisible(visible);
-      markerObj.visible = visible;
-    });
+      markerObj.marker.setVisible(visible)
+      markerObj.visible = visible
+    })
 
     // 표시된 마커 개수 업데이트
-    updateVisibleMarkers();
+    updateVisibleMarkers()
   }
 
   // 개발자 모드 토글을 위한 키보드 단축키 (Ctrl+Shift+D)
-  document.addEventListener("keydown", function (e) {
+  document.addEventListener("keydown", (e) => {
     if (e.ctrlKey && e.shiftKey && e.key === "D") {
-      e.preventDefault();
+      e.preventDefault()
 
-      const currentDevMode = document.body.classList.contains("dev-mode");
+      const currentDevMode = document.body.classList.contains("dev-mode")
 
       if (currentDevMode) {
-        document.body.classList.remove("dev-mode");
-        localStorage.setItem("devMode", "false");
+        document.body.classList.remove("dev-mode")
+        localStorage.setItem("devMode", "false")
       } else {
-        document.body.classList.add("dev-mode");
-        localStorage.setItem("devMode", "true");
+        document.body.classList.add("dev-mode")
+        localStorage.setItem("devMode", "true")
       }
     }
-  });
+  })
 
   // 마커 검색 함수
   function searchMarkers(searchText) {
-    let found = false;
+    let found = false
     const defaultIcon = {
       url: "/public/trashcan.svg",
-      size: new naver.maps.Size(30, 40),
-      scaledSize: new naver.maps.Size(30, 40),
-      anchor: new naver.maps.Point(15, 40),
-    };
+      size: new window.naver.maps.Size(30, 40),
+      scaledSize: new window.naver.maps.Size(30, 40),
+      anchor: new window.naver.maps.Point(15, 40),
+    }
 
     // 모든 마커를 기본 아이콘으로 초기화
     markers.forEach((markerObj) => {
-      markerObj.marker.setIcon(defaultIcon);
-    });
+      markerObj.marker.setIcon(defaultIcon)
+    })
 
     // 검색어가 없으면 종료
     if (!searchText || searchText.trim() === "") {
@@ -657,80 +640,102 @@ document.addEventListener("DOMContentLoaded", function () {
       if (selectedMarker) {
         selectedMarker.setIcon({
           url: "/public/trashcan_detailed.svg",
-          size: new naver.maps.Size(30, 40),
-          scaledSize: new naver.maps.Size(30, 40),
-          anchor: new naver.maps.Point(15, 40),
-        });
+          size: new window.naver.maps.Size(30, 40),
+          scaledSize: new window.naver.maps.Size(30, 40),
+          anchor: new window.naver.maps.Point(15, 40),
+        })
       }
-      return;
+      return
     }
 
     markers.forEach((markerObj) => {
-      const address = markerObj.data["도로명 주소"] || "";
-      const detail = markerObj.data["세부 위치"] || "";
+      const address = markerObj.data["도로명 주소"] || ""
+      const detail = markerObj.data["세부 위치"] || ""
 
       if (
         address.toLowerCase().includes(searchText.toLowerCase()) ||
         detail.toLowerCase().includes(searchText.toLowerCase())
       ) {
         // 검색어와 일치하는 마커 찾음
-        found = true;
+        found = true
 
         // 마커로 지도 이동
-        map.setCenter(markerObj.marker.getPosition());
-        map.setZoom(17);
+        map.setCenter(markerObj.marker.getPosition())
+        map.setZoom(17)
 
         // 이전에 선택된 마커 초기화
         if (selectedMarker) {
-          selectedMarker.setIcon(defaultIcon);
+          selectedMarker.setIcon(defaultIcon)
           if (selectedMarker.infoWindow) {
-            selectedMarker.infoWindow.close();
+            selectedMarker.infoWindow.close()
           }
         }
 
         // 선택된 마커를 상세 아이콘으로 변경
         markerObj.marker.setIcon({
           url: "/public/trashcan_detailed.svg",
-          size: new naver.maps.Size(30, 40),
-          scaledSize: new naver.maps.Size(30, 40),
-          anchor: new naver.maps.Point(15, 40),
-        });
+          size: new window.naver.maps.Size(30, 40),
+          scaledSize: new window.naver.maps.Size(30, 40),
+          anchor: new window.naver.maps.Point(15, 40),
+        })
 
-        selectedMarker = markerObj.marker;
-        selectedMarkerCoords = markerObj.marker.getPosition();
+        selectedMarker = markerObj.marker
+        selectedMarkerCoords = markerObj.marker.getPosition()
 
         // 인포윈도우 내용 생성 및 표시
-        const content = createInfoWindowContent(markerObj.data);
-        const infoWindow = new naver.maps.InfoWindow({
+        const content = createInfoWindowContent(markerObj.data)
+        const infoWindow = new window.naver.maps.InfoWindow({
           content: content,
           borderWidth: 0,
           backgroundColor: "transparent",
           disableAnchor: true,
-          pixelOffset: new naver.maps.Point(0, -10),
-        });
+          pixelOffset: new window.naver.maps.Point(0, -10),
+        })
 
-        infoWindow.open(map, markerObj.marker);
-        markerObj.marker.infoWindow = infoWindow;
+        infoWindow.open(map, markerObj.marker)
+        markerObj.marker.infoWindow = infoWindow
 
         // 상세 정보 패널 표시
-        showDetailPanel(markerObj.data, markerObj.marker.getPosition());
+        showDetailPanel(markerObj.data, markerObj.marker.getPosition())
       }
-    });
+    })
 
     if (!found) {
-      alert("검색 결과가 없습니다.");
+      alert("검색 결과가 없습니다.")
     }
   }
 
   // 개발자 모드 설정 함수 (정의되지 않은 경우 추가)
   function setupDevMode() {
     // 로컬 스토리지에서 개발자 모드 설정 불러오기
-    const devMode = localStorage.getItem("devMode") === "true";
+    const devMode = localStorage.getItem("devMode") === "true"
     if (devMode) {
-      document.body.classList.add("dev-mode");
+      document.body.classList.add("dev-mode")
+    }
+  }
+
+  // 인포 윈도우 내용 생성 함수
+  function createInfoWindowContent(data) {
+    let content = `<div class="info-window-content">`
+    content += `<h3>${data["도로명 주소"]}</h3>`
+    content += `<p>세부 위치: ${data["세부 위치"]}</p>`
+    content += `<p>수거 쓰레기 종류: ${data["수거 쓰레기 종류"]}</p>`
+    content += `</div>`
+    return content
+  }
+
+  // 상세 정보 패널 표시 함수
+  function showDetailPanel(data, position) {
+    if (locationDetail) {
+      locationDetail.classList.add("show")
+      locationDetail.innerHTML = `<h2>쓰레기통 정보</h2>`
+      locationDetail.innerHTML += `<p>도로명 주소: ${data["도로명 주소"]}</p>`
+      locationDetail.innerHTML += `<p>세부 위치: ${data["세부 위치"]}</p>`
+      locationDetail.innerHTML += `<p>수거 쓰레기 종류: ${data["수거 쓰레기 종류"]}</p>`
+      locationDetail.innerHTML += `<p>위치: ${position.lat()}, ${position.lng()}</p>`
     }
   }
 
   // 초기화
-  init();
-});
+  init()
+})
