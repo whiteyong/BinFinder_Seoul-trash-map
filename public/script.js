@@ -17,8 +17,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // 드로워 뷰 관련 요소들
   const mainMenuView = document.getElementById("mainMenuView")
   const aboutView = document.getElementById("aboutView")
+  const termsView = document.getElementById("termsView")
   const aboutBinFinder = document.getElementById("aboutBinFinder")
+  const serviceTerms = document.getElementById("serviceTerms")
   const backToMenu = document.getElementById("backToMenu")
+  const backToMenuFromTerms = document.getElementById("backToMenuFromTerms")
+  const closeMenuFromTerms = document.getElementById("closeMenuFromTerms")
 
   let map = null
   window.map = map
@@ -47,18 +51,28 @@ document.addEventListener("DOMContentLoaded", () => {
     sideMenu.classList.remove("expanded")
     mainMenuView.classList.add("active")
     aboutView.classList.remove("active")
+    termsView.classList.remove("active")
   }
 
   function showAboutView() {
     sideMenu.classList.add("expanded")
     mainMenuView.classList.remove("active")
     aboutView.classList.add("active")
+    termsView.classList.remove("active")
+  }
+
+  function showTermsView() {
+    sideMenu.classList.add("expanded")
+    mainMenuView.classList.remove("active")
+    aboutView.classList.remove("active")
+    termsView.classList.add("active")
   }
 
   function closeSideMenu() {
     sideMenu.classList.remove("show", "expanded")
     mainMenuView.classList.add("active")
     aboutView.classList.remove("active")
+    termsView.classList.remove("active")
   }
 
   function showLoading(show) {
@@ -548,23 +562,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // About 화면에서 메뉴 닫기 버튼 클릭 이벤트
-    if (closeMenuFromAbout) {
-      closeMenuFromAbout.addEventListener("click", () => {
-        closeSideMenu()
-      })
-    }
-
-    // 메뉴 오버레이 클릭 이벤트
-    if (menuOverlay) {
-      menuOverlay.addEventListener("click", () => {
-        closeSideMenu()
-      })
-    }
-
-    // BinFinder 소개 클릭 이벤트
     if (aboutBinFinder) {
       aboutBinFinder.addEventListener("click", () => {
         showAboutView()
+      })
+    }
+
+    // 서비스 이용약관 클릭 이벤트
+    if (serviceTerms) {
+      serviceTerms.addEventListener("click", () => {
+        showTermsView()
       })
     }
 
@@ -572,6 +579,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (backToMenu) {
       backToMenu.addEventListener("click", () => {
         showMainMenu()
+      })
+    }
+
+    // 약관 화면에서 뒤로가기 버튼 클릭 이벤트
+    if (backToMenuFromTerms) {
+      backToMenuFromTerms.addEventListener("click", () => {
+        showMainMenu()
+      })
+    }
+
+    // 약관 화면에서 메뉴 닫기 버튼 클릭 이벤트
+    if (closeMenuFromTerms) {
+      closeMenuFromTerms.addEventListener("click", () => {
+        closeSideMenu()
       })
     }
 
@@ -729,7 +750,7 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedMarker = markerObj.marker
         selectedMarkerCoords = markerObj.marker.getPosition()
 
-        // 인포윈도우 내용 생성 및 표시
+        // 인포 윈도우 내용 생성 및 표시
         const content = createInfoWindowContent(markerObj.data)
         const infoWindow = new window.naver.maps.InfoWindow({
           content: content,

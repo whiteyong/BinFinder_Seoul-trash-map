@@ -457,6 +457,69 @@ body {
   margin-bottom: 0;
 }
 
+/* Terms content styling */
+.terms-content {
+  padding: 16px 24px 24px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.terms-section {
+  margin-bottom: 24px;
+}
+
+.terms-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.terms-section p {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #555;
+}
+
+.terms-section p:last-child {
+  margin-bottom: 0;
+}
+
+.terms-section a {
+  color: #188fff;
+  text-decoration: none;
+}
+
+.terms-section a:hover {
+  text-decoration: underline;
+}
+
+.terms-footer {
+  border-top: 1px solid #f0f0f0;
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+.effective-date h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.effective-date p {
+  margin: 0 0 4px 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.effective-date p:last-child {
+  margin-bottom: 0;
+}
+
 .district-filter {
   padding: 16px;
   margin-top: auto;
@@ -496,7 +559,7 @@ body {
 }
 
 .marker.general {
-  background-color: #188fff; /* 파란색 */
+  background-color: #188fff; /* 파랑색 */
 }
 
 /* 현위치 버튼 스타일 */
@@ -597,7 +660,7 @@ body {
 }
 
 .gps-request-buttons button.confirm {
-  background-color: #cacbcd;
+  background-color: #cacabcd;
   color: white;
   margin-left: 8px;
 }
