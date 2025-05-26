@@ -367,25 +367,32 @@ body {
 
 .side-menu-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* 로고를 정중앙에 배치 */
   align-items: center;
-  padding: 20px 16px 20px 24px; /* 좌측 패딩을 24px로 증가 */
+  padding: 24px 20px; /* 상하 패딩을 24px로 증가 */
   position: relative;
-  min-height: 60px; /* 최소 높이 설정 */
+  min-height: 80px; /* 최소 높이를 80px로 증가 */
 }
 
+.side-menu-header .logo-text {
+  font-family: "Inconsolata", monospace;
+  font-size: 15px;
+  font-weight: 500;
+  color: #000000;
+  margin: 0;
+  text-align: center;
+}
+
+/* 기존 .logo-image 스타일 제거하고 .logo-text로 대체 */
 .side-menu-header .logo-image {
-  height: 32px; /* 28px에서 32px로 증가 */
-  width: auto;
-  display: block;
-  flex-shrink: 0; /* 로고가 줄어들지 않도록 설정 */
-  max-width: calc(100% - 80px); /* 60px에서 80px로 증가하여 더 많은 공간 확보 */
-  margin-left: 8px; /* 좌측 마진 추가 */
+  display: none; /* 기존 로고 이미지 숨김 */
 }
 
 .side-menu-header .close-button {
   color: #333;
-  position: static; /* absolute에서 static으로 변경 */
+  position: absolute; /* absolute로 변경하여 우측 상단에 고정 */
+  top: 20px;
+  right: 20px;
   background: none;
   border: none;
   font-size: 20px;
@@ -396,7 +403,7 @@ body {
   justify-content: center;
   border-radius: 50%;
   transition: background-color 0.2s;
-  flex-shrink: 0; /* 버튼이 줄어들지 않도록 설정 */
+  flex-shrink: 0;
 }
 
 .side-menu-header .close-button:hover {
