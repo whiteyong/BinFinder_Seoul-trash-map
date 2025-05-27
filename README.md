@@ -1,30 +1,17 @@
 # BinFinder
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+Are you troubling with finding a trash can in Seoul? 
+This map will help you to find a trash can while you travel in Seoul.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/whiteyong2-gmailcoms-projects/v0-bin-finder-wf)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/biU9D1YW4H6)
+서울에서 쓰레기통 찾기 너무 어려운가요?
+BinFinder가 서울을 여행하는 여러분을 위해 서울 쓰레기통 지도를 제공해드립니다 :)
+내 위치 주변에서 가장 가까운 쓰레기통을 찾아보세요
 
-## Overview
+## URL
+(Made by V0 of Vercel)
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+**https://v0-bin-finder-wf.vercel.app/**
 
-## Deployment
 
-Your project is live at:
-
-**[https://vercel.com/whiteyong2-gmailcoms-projects/v0-bin-finder-wf](https://vercel.com/whiteyong2-gmailcoms-projects/v0-bin-finder-wf)**
-
-## Build your app
-
-Continue building your app on:
-
-**[https://v0.dev/chat/projects/biU9D1YW4H6](https://v0.dev/chat/projects/biU9D1YW4H6)**
-
-## How It Works
-
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+## How it made
+해당 서비스는 V0 by Vercel에서 제작되었습니다.
