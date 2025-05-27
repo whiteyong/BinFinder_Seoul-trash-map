@@ -6,16 +6,6 @@ window.currentUserLocation = null
 // 선택된 마커 정보 저장
 window.selectedMarkerData = null
 
-// Declare the clearMarkers function before using it
-function clearMarkers() {
-  if (window.markers) {
-    window.markers.forEach((markerObj) => {
-      markerObj.marker.setMap(null)
-    })
-    window.markers = []
-  }
-}
-
 // 🔧 통합된 닫기 버튼 이벤트 리스너 추가 함수
 function addCloseButtonListener(infoWindow) {
   setTimeout(() => {
@@ -271,6 +261,7 @@ function createMarkersFromCSV() {
 
   // 기존 마커들 제거
   if (window.clearMarkers) {
+    console.log("기존 마커 제거 중...")
     window.clearMarkers()
   }
 

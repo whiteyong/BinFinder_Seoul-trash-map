@@ -402,11 +402,6 @@
         <!-- 지도가 표시될 영역 -->
         <div id="map" class="map"></div>
 
-        <!-- 10km 이내 쓰레기통 개수 (지도 위에 표시) -->
-        <div class="trash-count-overlay">
-          10km 이내 <span id="nearbyTrashCount">0</span>개
-        </div>
-
         <!-- 햄버거 메뉴 버튼 (지도 위에 표시) -->
         <button id="menuButton" class="menu-button">
           <i class="fas fa-bars"></i>
@@ -422,17 +417,6 @@
         <button id="currentLocationButton" class="current-location-button">
           <i class="fas fa-crosshairs"></i>
         </button>
-
-        <!-- 마커 클릭 시 표시되는 작은 정보 창 -->
-        <div id="markerInfoWindow" class="marker-info-window">
-          <h4 id="infoTitle">위치 정보</h4>
-          <div class="info-address">
-            <p id="infoAddress">- m</p>
-            <p id="infoDetailAddress">상세 주소</p>
-          </div>
-          <p id="infoTrashType">쓰레기통 유형</p>
-          <a href="#" id="infoDetailLink" class="detail-link">detail →</a>
-        </div>
       </div>
 
       <!-- 하단 광고 영역 -->
@@ -754,43 +738,5 @@
 
     <script src="/public/markers.js"></script>
     <script src="/public/script.js"></script>
-
-    <!-- 추가 JavaScript 코드 - 근처 쓰레기통 개수 업데이트 -->
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // 기존 script.js에 다음 함수를 추가하거나 여기서 정의
-        function updateNearbyTrashCount() {
-          // 현재 위치를 기준으로 10km 이내의 쓰레기통 개수 계산
-          if (currentLocationMarker && markers.length > 0) {
-            const currentPos = currentLocationMarker.getPosition();
-            let count = 0;
-
-            markers.forEach((markerObj) => {
-              const markerPos = markerObj.marker.getPosition();
-              const distance = naver.maps.Service.getDistance(
-                currentPos,
-                markerPos
-              );
-
-              // 10km = 10000m 이내인지 확인
-              if (distance <= 10000) {
-                count++;
-              }
-            });
-
-            // 개수 업데이트
-            document.getElementById("nearbyTrashCount").textContent = count;
-          }
-        }
-
-        // 위치가 업데이트될 때마다 근처 쓰레기통 개수 업데이트
-        // 이 부분은 script.js의 위치 업데이트 함수에 추가해야 합니다
-        // 여기서는 예시로만 제공합니다
-
-        // 기존 코드에 이 함수 호출을 추가해야 합니다:
-        // 1. 현위치 마커가 생성되거나 업데이트될 때
-        // 2. 새로운 마커가 추가될 때
-      });
-    </script>
   </body>
 </html>

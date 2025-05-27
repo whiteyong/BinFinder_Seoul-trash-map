@@ -6,10 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuOverlay = document.getElementById("menuOverlay");
   const locationDetail = document.getElementById("locationDetail");
   const closeDetail = document.getElementById("closeDetail");
-  const searchInput = document.getElementById("searchInput");
-  const searchButton = document.getElementById("searchButton");
-  const filterButtons = document.querySelectorAll(".filter-button");
-  const districtFilter = document.getElementById("districtFilter");
   const loadingIndicator = document.getElementById("loadingIndicator");
   const totalCount = document.getElementById("totalCount");
   const visibleCount = document.getElementById("visibleCount");
@@ -121,11 +117,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 정보 창 위치 업데이트 함수 (네이버 지도 InfoWindow를 사용하므로 이제는 사용하지 않음)
-  function updateInfoWindowPosition() {
-    // 이 함수는 더 이상 사용되지 않지만, 호출부가 남아있을 수 있으므로 빈 함수로 유지
-  }
-
   function clearMarkers() {
     markers.forEach((markerObj) => {
       markerObj.marker.setMap(null);
@@ -157,18 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return result;
   }
 
-  function populateDistrictFilter(districts) {
-    if (!districtFilter) return;
-
-    districtFilter.innerHTML = '<option value="all">전체 구</option>';
-    districts.forEach((district) => {
-      const option = document.createElement("option");
-      option.value = district;
-      option.textContent = district;
-      districtFilter.appendChild(option);
-    });
-  }
-
   function parseCSVAndLoadData(csvText) {
     try {
       console.log("📦 CSV 로딩 시작");
@@ -178,7 +157,6 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("📋 헤더 확인:", headers);
 
       const data = [];
-      const districts = new Set();
 
       for (let i = 1; i < rows.length; i++) {
         if (!rows[i].trim()) continue;
@@ -188,10 +166,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const item = {};
         for (let j = 0; j < headers.length; j++) {
           item[headers[j].trim()] = values[j].trim();
-        }
-
-        if (item["구"]) {
-          districts.add(item["구"]);
         }
 
         data.push(item);
@@ -204,8 +178,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (totalCount) {
         totalCount.textContent = `총 ${data.length}개의 쓰레기통`;
       }
-
-      populateDistrictFilter(Array.from(districts).sort());
 
       // 지오코딩 대신 CSV의 위도/경도 데이터를 사용하여 마커 생성
       // createMarkersFromCSV();
@@ -265,22 +237,6 @@ document.addEventListener("DOMContentLoaded", () => {
     map = new window.naver.maps.Map("map", mapOptions);
     window.map = map;
     console.log("🗺 지도 초기화 완료");
-
-    // 지도 클릭 이벤트 리스너
-    window.naver.maps.Event.addListener(map, "click", () => {
-      // 선택된 마커의 아이콘 초기화
-      if (window.selectedMarker) {
-        window.selectedMarker.setIcon({
-          url: "/public/trashcan.svg",
-          size: new window.naver.maps.Size(30, 40),
-          scaledSize: new window.naver.maps.Size(30, 40),
-          anchor: new window.naver.maps.Point(15, 40),
-        });
-        window.selectedMarker.infoWindow.close();
-        window.selectedMarker = null;
-        selectedMarkerCoords = null;
-      }
-    });
 
     // 현위치 버튼 추가
     const mapContainer = document.querySelector(".map-container");
@@ -432,9 +388,6 @@ document.addEventListener("DOMContentLoaded", () => {
           isWatchingLocation = true;
           currentLocationButton.classList.add("active");
           showLoading(false);
-
-          // 근처 쓰레기통 개수 업데이트
-          updateNearbyTrashCount();
         },
         (error) => {
           showLoading(false);
@@ -622,49 +575,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // 구 필터 변경 이벤트
-    if (districtFilter) {
-      districtFilter.addEventListener("change", function () {
-        currentDistrict = this.value;
-        filterMarkers();
-      });
-    }
-
-    // 검색 버튼 클릭 이벤트
-    if (searchButton && searchInput) {
-      searchButton.addEventListener("click", () => {
-        const searchText = searchInput.value.trim().toLowerCase();
-        if (searchText) {
-          searchMarkers(searchText);
-        }
-      });
-
-      // 엔터 키 이벤트
-      searchInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          const searchText = searchInput.value.trim().toLowerCase();
-          if (searchText) {
-            searchMarkers(searchText);
-          }
-        }
-      });
-    }
-
-    // 필터 버튼 클릭 이벤트
-    filterButtons.forEach((button) => {
-      button.addEventListener("click", function () {
-        // 이전 활성 버튼 비활성화
-        filterButtons.forEach((btn) => btn.classList.remove("active"));
-
-        // 현재 버튼 활성화
-        this.classList.add("active");
-
-        // 필터 적용
-        currentFilter = this.dataset.filter;
-        filterMarkers();
-      });
-    });
-
     // 개발자 모드 설정
     setupDevMode();
 
@@ -757,89 +667,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 마커 검색 함수
-  function searchMarkers(searchText) {
-    let found = false;
-    const defaultIcon = {
-      url: "/public/trashcan.svg",
-      size: new window.naver.maps.Size(30, 40),
-      scaledSize: new window.naver.maps.Size(30, 40),
-      anchor: new window.naver.maps.Point(15, 40),
-    };
-
-    // 모든 마커를 기본 아이콘으로 초기화
-    markers.forEach((markerObj) => {
-      markerObj.marker.setIcon(defaultIcon);
-    });
-
-    // 검색어가 없으면 종료
-    if (!searchText || searchText.trim() === "") {
-      // 선택된 마커가 있으면 해당 마커만 상세 아이콘으로 유지
-      if (selectedMarker) {
-        selectedMarker.setIcon({
-          url: "/public/trashcan_detailed.svg",
-          size: new window.naver.maps.Size(30, 40),
-          scaledSize: new window.naver.maps.Size(30, 40),
-          anchor: new window.naver.maps.Point(15, 40),
-        });
-      }
-      return;
-    }
-
-    markers.forEach((markerObj) => {
-      const address = markerObj.data["도로명 주소"] || "";
-      const detail = markerObj.data["세부 위치"] || "";
-
-      if (
-        address.toLowerCase().includes(searchText.toLowerCase()) ||
-        detail.toLowerCase().includes(searchText.toLowerCase())
-      ) {
-        // 검색어와 일치하는 마커 찾음
-        found = true;
-
-        // 마커로 지도 이동
-        map.setCenter(markerObj.marker.getPosition());
-        map.setZoom(17);
-
-        // 이전에 선택된 마커 초기화
-        if (selectedMarker) {
-          selectedMarker.setIcon(defaultIcon);
-          if (selectedMarker.infoWindow) {
-            selectedMarker.infoWindow.close();
-          }
-        }
-
-        // 선택된 마커를 상세 아이콘으로 변경
-        markerObj.marker.setIcon({
-          url: "/public/trashcan_detailed.svg",
-          size: new window.naver.maps.Size(30, 40),
-          scaledSize: new window.naver.maps.Size(30, 40),
-          anchor: new window.naver.maps.Point(15, 40),
-        });
-
-        selectedMarker = markerObj.marker;
-        selectedMarkerCoords = markerObj.marker.getPosition();
-
-        // 인포 윈도우 내용 생성 및 표시
-        const content = createInfoWindowContent(markerObj.data);
-        const infoWindow = new window.naver.maps.InfoWindow({
-          content: content,
-          borderWidth: 0,
-          backgroundColor: "transparent",
-          disableAnchor: true,
-          pixelOffset: new window.naver.maps.Point(0, -10),
-        });
-
-        infoWindow.open(map, markerObj.marker);
-        markerObj.marker.infoWindow = infoWindow;
-      }
-    });
-
-    if (!found) {
-      alert("검색 결과가 없습니다.");
-    }
-  }
-
   // 개발자 모드 설정 함수 (정의되지 않은 경우 추가)
   function setupDevMode() {
     // 로컬 스토리지에서 개발자 모드 설정 불러오기
@@ -847,16 +674,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (devMode) {
       document.body.classList.add("dev-mode");
     }
-  }
-
-  // 인포 윈도우 내용 생성 함수
-  function createInfoWindowContent(data) {
-    let content = `<div class="info-window-content">`;
-    content += `<h3>${data["도로명 주소"]}</h3>`;
-    content += `<p>세부 위치: ${data["세부 위치"]}</p>`;
-    content += `<p>수거 쓰레기 종류: ${data["수거 쓰레기 종류"]}</p>`;
-    content += `</div>`;
-    return content;
   }
 
   // 초기화
