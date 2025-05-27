@@ -121,15 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function updateVisibleMarkers() {
-    visibleMarkers = markers.filter((marker) => marker.visible).length;
-    if (visibleCount) {
-      visibleCount.textContent = `화면에 ${visibleMarkers}개 표시 중`;
-    }
-    window.updateVisibleMarkers = updateVisibleMarkers;
-    console.log("✅ 마커 필터링 완료 - 현재 화면 표시 마커:", visibleMarkers);
-  }
-
   // 정보 창 위치 업데이트 함수 (네이버 지도 InfoWindow를 사용하므로 이제는 사용하지 않음)
   function updateInfoWindowPosition() {
     // 이 함수는 더 이상 사용되지 않지만, 호출부가 남아있을 수 있으므로 빈 함수로 유지
@@ -298,11 +289,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       console.error("지도 컨테이너를 찾을 수 없습니다.");
     }
-
-    // 마커 개수 업데이트
-    window.naver.maps.Event.addListener(map, "idle", () => {
-      updateVisibleMarkers();
-    });
   }
 
   // 페이지 로드 시 위치 권한 요청 함수
