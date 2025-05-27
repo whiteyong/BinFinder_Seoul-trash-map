@@ -18,11 +18,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const mainMenuView = document.getElementById("mainMenuView")
   const aboutView = document.getElementById("aboutView")
   const termsView = document.getElementById("termsView")
+  const locationTermsView = document.getElementById("locationTermsView")
   const aboutBinFinder = document.getElementById("aboutBinFinder")
   const serviceTerms = document.getElementById("serviceTerms")
+  const locationTerms = document.getElementById("locationTerms")
   const backToMenu = document.getElementById("backToMenu")
   const backToMenuFromTerms = document.getElementById("backToMenuFromTerms")
+  const backToMenuFromLocation = document.getElementById("backToMenuFromLocation")
   const closeMenuFromTerms = document.getElementById("closeMenuFromTerms")
+  const closeMenuFromLocation = document.getElementById("closeMenuFromLocation")
+  const privacyView = document.getElementById("privacyView")
+  const privacyPolicy = document.getElementById("privacyPolicy")
+  const backToMenuFromPrivacy = document.getElementById("backToMenuFromPrivacy")
+  const closeMenuFromPrivacy = document.getElementById("closeMenuFromPrivacy")
 
   let map = null
   window.map = map
@@ -52,6 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
     mainMenuView.classList.add("active")
     aboutView.classList.remove("active")
     termsView.classList.remove("active")
+    locationTermsView.classList.remove("active")
+    privacyView.classList.remove("active")
   }
 
   function showAboutView() {
@@ -59,6 +69,8 @@ document.addEventListener("DOMContentLoaded", () => {
     mainMenuView.classList.remove("active")
     aboutView.classList.add("active")
     termsView.classList.remove("active")
+    locationTermsView.classList.remove("active")
+    privacyView.classList.remove("active")
   }
 
   function showTermsView() {
@@ -66,6 +78,26 @@ document.addEventListener("DOMContentLoaded", () => {
     mainMenuView.classList.remove("active")
     aboutView.classList.remove("active")
     termsView.classList.add("active")
+    locationTermsView.classList.remove("active")
+    privacyView.classList.remove("active")
+  }
+
+  function showLocationTermsView() {
+    sideMenu.classList.add("expanded")
+    mainMenuView.classList.remove("active")
+    aboutView.classList.remove("active")
+    termsView.classList.remove("active")
+    locationTermsView.classList.add("active")
+    privacyView.classList.remove("active")
+  }
+
+  function showPrivacyView() {
+    sideMenu.classList.add("expanded")
+    mainMenuView.classList.remove("active")
+    aboutView.classList.remove("active")
+    termsView.classList.remove("active")
+    locationTermsView.classList.remove("active")
+    privacyView.classList.add("active")
   }
 
   function closeSideMenu() {
@@ -73,6 +105,8 @@ document.addEventListener("DOMContentLoaded", () => {
     mainMenuView.classList.add("active")
     aboutView.classList.remove("active")
     termsView.classList.remove("active")
+    locationTermsView.classList.remove("active")
+    privacyView.classList.remove("active")
   }
 
   function showLoading(show) {
@@ -575,6 +609,13 @@ document.addEventListener("DOMContentLoaded", () => {
       })
     }
 
+    // 위치기반서비스 이용약관 클릭 이벤트
+    if (locationTerms) {
+      locationTerms.addEventListener("click", () => {
+        showLocationTermsView()
+      })
+    }
+
     // 뒤로가기 버튼 클릭 이벤트
     if (backToMenu) {
       backToMenu.addEventListener("click", () => {
@@ -586,6 +627,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (backToMenuFromTerms) {
       backToMenuFromTerms.addEventListener("click", () => {
         showMainMenu()
+      })
+    }
+
+    // 위치기반서비스 약관 화면에서 뒤로가기 버튼 클릭 이벤트
+    if (backToMenuFromLocation) {
+      backToMenuFromLocation.addEventListener("click", () => {
+        showMainMenu()
+      })
+    }
+
+    // 위치기반서비스 약관 화면에서 메뉴 닫기 버튼 클릭 이벤트
+    if (closeMenuFromLocation) {
+      closeMenuFromLocation.addEventListener("click", () => {
+        closeSideMenu()
       })
     }
 
@@ -659,6 +714,27 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.target === sideMenu) {
           closeSideMenu()
         }
+      })
+    }
+
+    // 개인정보 처리방침 클릭 이벤트
+    if (privacyPolicy) {
+      privacyPolicy.addEventListener("click", () => {
+        showPrivacyView()
+      })
+    }
+
+    // 개인정보 처리방침 화면에서 뒤로가기 버튼 클릭 이벤트
+    if (backToMenuFromPrivacy) {
+      backToMenuFromPrivacy.addEventListener("click", () => {
+        showMainMenu()
+      })
+    }
+
+    // 개인정보 처리방침 화면에서 메뉴 닫기 버튼 클릭 이벤트
+    if (closeMenuFromPrivacy) {
+      closeMenuFromPrivacy.addEventListener("click", () => {
+        closeSideMenu()
       })
     }
   }
