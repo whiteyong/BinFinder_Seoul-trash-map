@@ -1,17 +1,26 @@
 # BinFinder
-
-Are you troubling with finding a trash can in Seoul? 
-This map will help you to find a trash can while you travel in Seoul.
-
-서울에서 쓰레기통 찾기 너무 어려운가요?
-BinFinder가 서울을 여행하는 여러분을 위해 서울 쓰레기통 지도를 제공해드립니다 :)
-내 위치 주변에서 가장 가까운 쓰레기통을 찾아보세요
+(↑프로젝트 제목)
 
 ## URL
-(Made by V0 of Vercel)
-
-**https://v0-bin-finder-wf.vercel.app/**
+> 서울 쓰레기통 지도 👉 **https://v0-bin-finder-wf.vercel.app/**
 
 
-## How it made
-해당 서비스는 V0 by Vercel에서 제작되었습니다.
+## Description
+
+Are you troubling with finding a trash can in Seoul?</p>
+This map will help you to find a trash can while you travel in Seoul.</p>
+
+서울에서 쓰레기통 찾기 너무 어려운가요?</p>
+BinFinder는 서울을 여행하는 여러분을 위한 서울 쓰레기통 지도 서비스입니다 :)</p>
+내 위치 주변에서 가장 가까운 쓰레기통을 찾아보세요</p>
+
+
+## Main Feature
+### 지도 및 현재 위치 추적
+- 네이버 지도 API 사용
+
+### 쓰레기통 위치 마커 표시 
+- 공공데이터 포털 가로쓰레기통 현황을 csv 정적 데이터로 변환하여 지도에 마커 표시
+
+### 기타 기능
+- 타 지역 업데이터 예정
