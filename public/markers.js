@@ -16,6 +16,43 @@ function clearMarkers() {
   }
 }
 
+// 🔧 통합된 닫기 버튼 이벤트 리스너 추가 함수
+function addCloseButtonListener(infoWindow) {
+  setTimeout(() => {
+    const closeButton = document.querySelector(".info-window-close")
+    if (closeButton) {
+      console.log("🔥 통합 닫기 버튼 이벤트 리스너 추가")
+
+      // 기존 이벤트 리스너 제거 (중복 방지)
+      closeButton.onclick = null
+
+      // 새 이벤트 리스너 추가
+      closeButton.onclick = (e) => {
+        e.stopPropagation()
+
+        // 인포윈도우 닫기
+        if (infoWindow) {
+          infoWindow.close()
+        }
+
+        // 마커 아이콘을 기본 상태로 복원
+        if (window.selectedMarker) {
+          window.selectedMarker.setIcon({
+            url: "/public/trashcan.svg",
+            size: new window.naver.maps.Size(30, 40),
+            scaledSize: new window.naver.maps.Size(30, 40),
+            anchor: new window.naver.maps.Point(15, 40),
+          })
+        }
+
+        // 선택 상태 초기화
+        window.selectedMarker = null
+        window.selectedMarkerData = null
+      }
+    }
+  }, 100)
+}
+
 // 두 지점 간의 거리를 계산하는 함수 (Haversine formula)
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 6371 // 지구의 반지름 (km)
@@ -75,26 +112,8 @@ function updateOpenInfoWindow() {
     const content = createInfoWindowContent(window.selectedMarkerData)
     window.selectedMarker.infoWindow.setContent(content)
 
-    // 닫기 버튼 이벤트 리스너 다시 추가
-    setTimeout(() => {
-      const closeButton = document.querySelector(".info-window-close")
-      if (closeButton) {
-        closeButton.onclick = (e) => {
-          e.stopPropagation()
-          if (window.selectedMarker && window.selectedMarker.infoWindow) {
-            window.selectedMarker.infoWindow.close()
-            window.selectedMarker.setIcon({
-              url: "/public/trashcan.svg",
-              size: new window.naver.maps.Size(30, 40),
-              scaledSize: new window.naver.maps.Size(30, 40),
-              anchor: new window.naver.maps.Point(15, 40),
-            })
-          }
-          window.selectedMarker = null
-          window.selectedMarkerData = null
-        }
-      }
-    }, 100)
+    // 🔧 통합 함수 사용
+    addCloseButtonListener(window.selectedMarker.infoWindow)
   }
 }
 
@@ -373,24 +392,8 @@ function updateVisibleAreaMarkers() {
         infoWindow.setContent(content)
         infoWindow.open(map, marker)
 
-        // 닫기 버튼 이벤트 리스너 추가
-        setTimeout(() => {
-          const closeButton = document.querySelector(".info-window-close")
-          if (closeButton) {
-            closeButton.onclick = (e) => {
-              e.stopPropagation()
-              infoWindow.close()
-              marker.setIcon({
-                url: "/public/trashcan.svg",
-                size: new window.naver.maps.Size(30, 40),
-                scaledSize: new window.naver.maps.Size(30, 40),
-                anchor: new window.naver.maps.Point(15, 40),
-              })
-              window.selectedMarker = null
-              window.selectedMarkerData = null
-            }
-          }
-        }, 100)
+        // 🔧 통합 함수 사용
+        addCloseButtonListener(infoWindow)
       }
     }
 
@@ -474,30 +477,8 @@ function updateVisibleAreaMarkers() {
 
       console.log("🔥 인포윈도우 열림 완료")
 
-      // 닫기 버튼 이벤트 리스너 추가
-      setTimeout(() => {
-        const closeButton = document.querySelector(".info-window-close")
-        if (closeButton) {
-          console.log("🔥 닫기 버튼 이벤트 리스너 추가")
-          closeButton.onclick = (e) => {
-            e.stopPropagation()
-            infoWindow.close()
-            // window.selectedMarker를 사용하여 마커를 기본 상태로 되돌림
-            if (window.selectedMarker) {
-              window.selectedMarker.setIcon({
-                url: "/public/trashcan.svg",
-                size: new window.naver.maps.Size(30, 40),
-                scaledSize: new window.naver.maps.Size(30, 40),
-                anchor: new window.naver.maps.Point(15, 40),
-              })
-            }
-            window.selectedMarker = null
-            window.selectedMarkerData = null
-          }
-        } else {
-          console.log("🔥 닫기 버튼을 찾을 수 없음")
-        }
-      }, 100)
+      // 🔧 통합 함수 사용
+      addCloseButtonListener(infoWindow)
     })
 
     marker.infoWindow = infoWindow

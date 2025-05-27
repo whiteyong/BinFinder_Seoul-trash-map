@@ -324,9 +324,6 @@ document.addEventListener("DOMContentLoaded", () => {
           // 현위치 마커 생성
           createCurrentLocationMarker(currentPos, position.coords.accuracy);
 
-          // 근처 쓰레기통 개수 업데이트
-          updateNearbyTrashCount();
-
           console.log("✅ 위치 권한 허용됨, 현재 위치:", lat, lng);
         },
         // 오류 콜백
