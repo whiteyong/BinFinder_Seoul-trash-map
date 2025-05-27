@@ -84,7 +84,7 @@ function updateOpenInfoWindow() {
           if (window.selectedMarker && window.selectedMarker.infoWindow) {
             window.selectedMarker.infoWindow.close()
             window.selectedMarker.setIcon({
-              url: "./trashcan.svg",
+              url: "/public/trashcan.svg",
               size: new window.naver.maps.Size(30, 40),
               scaledSize: new window.naver.maps.Size(30, 40),
               anchor: new window.naver.maps.Point(15, 40),
@@ -138,7 +138,7 @@ function createInfoWindowContent(item) {
   font-size: 13px;
   margin-top: 4px;
 ">
-  <img src="./distance.png" style="
+  <img src="/public/distance.svg" style="
     width: 16px;
     height: 16px;
     margin-right: 6px;
@@ -158,7 +158,7 @@ function createInfoWindowContent(item) {
   font-size: 13px;
   margin-top: 4px;
 ">
-  <img src="./distance.png" style="
+  <img src="/public/distance.svg" style="
     width: 16px;
     height: 16px;
     margin-right: 6px;
@@ -213,7 +213,7 @@ function createInfoWindowContent(item) {
       font-size: 14px;
       color: #666;
     ">
-      <img src="./carbon_location-filled.svg" style="
+      <img src="/public/carbon_location-filled.svg" style="
         width: 16px;
         height: 16px;
         margin-right: 8px;
@@ -266,7 +266,7 @@ function createMarkersFromCSV() {
 
       // 선택된 마커를 기본 상태로 되돌림
       window.selectedMarker.setIcon({
-        url: "./trashcan.svg",
+        url: "/public/trashcan.svg",
         size: new window.naver.maps.Size(30, 40),
         scaledSize: new window.naver.maps.Size(30, 40),
         anchor: new window.naver.maps.Point(15, 40),
@@ -345,7 +345,7 @@ function updateVisibleAreaMarkers() {
       position: coords,
       map: map,
       icon: {
-        url: isSelected ? "./trashcan_detailed.svg" : "./trashcan.svg",
+        url: isSelected ? "/public/trashcan_detailed.svg" : "/public/trashcan.svg",
         size: new window.naver.maps.Size(30, 40),
         scaledSize: new window.naver.maps.Size(30, 40),
         anchor: new window.naver.maps.Point(15, 40),
@@ -381,7 +381,7 @@ function updateVisibleAreaMarkers() {
               e.stopPropagation()
               infoWindow.close()
               marker.setIcon({
-                url: "./trashcan.svg",
+                url: "/public/trashcan.svg",
                 size: new window.naver.maps.Size(30, 40),
                 scaledSize: new window.naver.maps.Size(30, 40),
                 anchor: new window.naver.maps.Point(15, 40),
@@ -411,7 +411,7 @@ function updateVisibleAreaMarkers() {
       if (window.selectedMarker === marker) {
         console.log("🔥 같은 마커 재클릭 - 선택 해제")
         marker.setIcon({
-          url: "./trashcan.svg",
+          url: "/public/trashcan.svg",
           size: new window.naver.maps.Size(30, 40),
           scaledSize: new window.naver.maps.Size(30, 40),
           anchor: new window.naver.maps.Point(15, 40),
@@ -428,7 +428,7 @@ function updateVisibleAreaMarkers() {
       if (window.selectedMarker) {
         console.log("🔥 이전 마커 초기화")
         window.selectedMarker.setIcon({
-          url: "./trashcan.svg",
+          url: "/public/trashcan.svg",
           size: new window.naver.maps.Size(30, 40),
           scaledSize: new window.naver.maps.Size(30, 40),
           anchor: new window.naver.maps.Point(15, 40),
@@ -447,7 +447,7 @@ function updateVisibleAreaMarkers() {
       console.log("🔥 새로운 마커 아이콘 변경")
       // 새로운 마커 선택
       marker.setIcon({
-        url: "./trashcan_detailed.svg",
+        url: "/public/trashcan_detailed.svg",
         size: new window.naver.maps.Size(30, 40),
         scaledSize: new window.naver.maps.Size(30, 40),
         anchor: new window.naver.maps.Point(15, 40),
@@ -485,7 +485,7 @@ function updateVisibleAreaMarkers() {
             // window.selectedMarker를 사용하여 마커를 기본 상태로 되돌림
             if (window.selectedMarker) {
               window.selectedMarker.setIcon({
-                url: "./trashcan.svg",
+                url: "/public/trashcan.svg",
                 size: new window.naver.maps.Size(30, 40),
                 scaledSize: new window.naver.maps.Size(30, 40),
                 anchor: new window.naver.maps.Point(15, 40),
