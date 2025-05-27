@@ -119,6 +119,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function clearMarkers() {
     markers.forEach((markerObj) => {
+      if (markerObj.marker.infoWindow?.getMap()) {
+        console.log("🗑️ 마커 정보창 닫기");
+        markerObj.marker.infoWindow.close();
+      }
       markerObj.marker.setMap(null);
     });
     markers = [];
@@ -618,36 +622,6 @@ document.addEventListener("DOMContentLoaded", () => {
         closeSideMenu();
       });
     }
-  }
-
-  // 마커 필터링 함수
-  function filterMarkers() {
-    markers.forEach((markerObj) => {
-      let visible = true;
-
-      // 구 필터 적용
-      if (
-        currentDistrict !== "all" &&
-        markerObj.data["구"] !== currentDistrict
-      ) {
-        visible = false;
-      }
-
-      // 쓰레기통 유형 필터 적용
-      if (currentFilter !== "all") {
-        const trashTypeText = markerObj.data["수거 쓰레기 종류"] || "";
-        if (!trashTypeText.includes(currentFilter)) {
-          visible = false;
-        }
-      }
-
-      // 마커 표시/숨김 설정
-      markerObj.marker.setVisible(visible);
-      markerObj.visible = visible;
-    });
-
-    // 표시된 마커 개수 업데이트
-    updateVisibleMarkers();
   }
 
   // 개발자 모드 토글을 위한 키보드 단축키 (Ctrl+Shift+D)

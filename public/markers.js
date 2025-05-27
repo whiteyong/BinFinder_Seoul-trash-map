@@ -317,7 +317,7 @@ function updateVisibleAreaMarkers() {
 
   // 줌 레벨이 너무 낮으면 마커를 표시하지 않음 (성능 최적화)
   if (zoom < 15) {
-    clearMarkers()
+    window.clearMarkers()
     console.log("🔍 줌 레벨이 낮아 마커를 숨김")
     return
   }
@@ -336,7 +336,7 @@ function updateVisibleAreaMarkers() {
   console.log(`📍 화면 내 마커 ${visibleData.length}개 렌더링 (전체: ${window.trashCanData.length}개)`)
 
   // 기존 마커 제거
-  clearMarkers()
+  window.clearMarkers()
 
   // 화면에 보이는 마커만 생성
   visibleData.forEach((item, index) => {
@@ -362,30 +362,20 @@ function updateVisibleAreaMarkers() {
       },
     })
 
-    // 인포윈도우 생성
-    const infoWindow = new window.naver.maps.InfoWindow({
-      content: "",
-      borderWidth: 0,
-      backgroundColor: "transparent",
-      disableAnchor: true,
-      pixelOffset: new window.naver.maps.Point(0, -15),
-    })
-
-    // 선택된 마커라면 참조만 저장하고 인포윈도우는 자동으로 열지 않음
+    // 선택된 마커라면 인포윈도우를 열음
     if (isSelected) {
       window.selectedMarker = marker
       window.selectedMarkerCoords = coords
+      const infoWindow = new window.naver.maps.InfoWindow({
+        content: createInfoWindowContent(item),
+        borderWidth: 0,
+        backgroundColor: "transparent",
+        disableAnchor: true,
+        pixelOffset: new window.naver.maps.Point(0, -15),
+      })
+      infoWindow.open(map, marker)
+      addCloseButtonListener(infoWindow)
       marker.infoWindow = infoWindow
-
-      // 인포윈도우가 이미 열려있었다면 새 마커에서도 열어줌
-      if (window.selectedMarker && window.selectedMarker.infoWindow && window.selectedMarker.infoWindow.getMap()) {
-        const content = createInfoWindowContent(item)
-        infoWindow.setContent(content)
-        infoWindow.open(map, marker)
-
-        // 🔧 통합 함수 사용
-        addCloseButtonListener(infoWindow)
-      }
     }
 
     // 마커 클릭 이벤트
@@ -410,7 +400,7 @@ function updateVisibleAreaMarkers() {
           scaledSize: new window.naver.maps.Size(30, 40),
           anchor: new window.naver.maps.Point(15, 40),
         })
-        infoWindow.close()
+        marker.infoWindow.close()
         window.selectedMarker = null
         window.selectedMarkerData = null
         return
@@ -460,9 +450,16 @@ function updateVisibleAreaMarkers() {
       // 인포윈도우 내용 생성 및 표시
       console.log("🔥 인포윈도우 내용 생성 중:", item)
       const content = createInfoWindowContent(item)
-      console.log("🔥 생성된 인포윈도우 내용:", content)
+      console.log("🔥 생성된 인포윈도우 내용:", content.slice(0, 30), "...")
 
-      infoWindow.setContent(content)
+
+      const infoWindow = new window.naver.maps.InfoWindow({
+        content: content,
+        borderWidth: 0,
+        backgroundColor: "transparent",
+        disableAnchor: true,
+        pixelOffset: new window.naver.maps.Point(0, -15),
+      })
       infoWindow.open(map, marker)
       marker.infoWindow = infoWindow
 
@@ -472,8 +469,6 @@ function updateVisibleAreaMarkers() {
       addCloseButtonListener(infoWindow)
     })
 
-    marker.infoWindow = infoWindow
-
     window.markers.push({
       marker: marker,
       data: item,
@@ -481,10 +476,6 @@ function updateVisibleAreaMarkers() {
       visible: true,
     })
   })
-
-  if (window.updateVisibleMarkers) {
-    window.updateVisibleMarkers()
-  }
 }
 
 // 전역 함수로 노출
