@@ -122,9 +122,9 @@ function createInfoWindowContent(item) {
   if (trashTypeText.includes("일반쓰레기") && trashTypeText.includes("재활용")) {
     formattedTrashType = "Trash can, Separate Trash can"
   } else if (trashTypeText.includes("일반쓰레기")) {
-    formattedTrashType = "Trash can"
+    formattedTrashType = "일반쓰레기"
   } else if (trashTypeText.includes("재활용")) {
-    formattedTrashType = "Separate Trash can"
+    formattedTrashType = "재활용쓰레기"
   }
 
   // 거리 계산
