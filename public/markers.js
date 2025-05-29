@@ -240,12 +240,12 @@ function createInfoWindowContent(item) {
       align-items: center;
       font-size: 14px;
       color: #666;
-      margin-top: 8px;
+      margin-top: 12px;
     ">
       <img src="/public/trashcan type.svg" style="
         width: 16px;
         height: 16px;
-        margin-right: 12px;
+        margin-right: 8px;
         vertical-align: middle;
       " alt="쓰레기통 타입" />
       <span>${formattedTrashType}</span>
