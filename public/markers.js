@@ -144,7 +144,7 @@ function createInfoWindowContent(item) {
 <div style="
   display: flex;
   align-items: center;
-  font-size: 13px;
+  font-size: 14px;
   margin-top: 4px;
 ">
   <img src="/public/distance.svg" style="
@@ -239,7 +239,7 @@ function createInfoWindowContent(item) {
       display: flex;
       align-items: center;
       font-size: 14px;
-      color: #888;
+      color: #666;
       margin-top: 8px;
     ">
       <img src="/public/trashcan type.svg" style="
