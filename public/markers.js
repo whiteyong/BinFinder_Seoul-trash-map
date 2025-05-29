@@ -245,7 +245,7 @@ function createInfoWindowContent(item) {
       <img src="/public/trashcan type.svg" style="
         width: 16px;
         height: 16px;
-        margin-right: 8px;
+        margin-right: 12px;
         vertical-align: middle;
       " alt="쓰레기통 타입" />
       <span>${formattedTrashType}</span>
