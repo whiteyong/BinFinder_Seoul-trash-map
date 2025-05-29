@@ -251,7 +251,6 @@ body {
   display: flex;
   flex-direction: column;
   z-index: 2;
-  overflow: hidden;
 }
 
 /* 드로워 확장 상태 */
@@ -276,58 +275,11 @@ body {
   bottom: 0;
   background-color: white;
   transform: translateX(100%);
-  transition: transform 0.3s ease, visibility 0.3s ease;
-  visibility: hidden;
-  z-index: 1;
-  overflow: hidden;
+  transition: transform 0.3s ease;
 }
 
 .menu-view.active {
   transform: translateX(0);
-  visibility: visible;
-  z-index: 2;
-}
-
-/* 각 뷰별 z-index 설정 */
-#mainMenuView {
-  z-index: 10;
-}
-
-#aboutView {
-  z-index: 9;
-}
-
-#termsView {
-  z-index: 8;
-}
-
-#locationTermsView {
-  z-index: 7;
-}
-
-#privacyView {
-  z-index: 6;
-}
-
-/* 활성 뷰는 최상위로 */
-#mainMenuView.active {
-  z-index: 15;
-}
-
-#aboutView.active {
-  z-index: 15;
-}
-
-#termsView.active {
-  z-index: 15;
-}
-
-#locationTermsView.active {
-  z-index: 15;
-}
-
-#privacyView.active {
-  z-index: 15;
 }
 
 /* BinFinder 소개 항목 폰트 사이즈 */
