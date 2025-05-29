@@ -238,9 +238,9 @@ function createInfoWindowContent(item) {
     <div style="
       display: flex;
       align-items: center;
-      font-size: 13px
-      color: #666;
-      margin-top: 12px;
+      font-size: 14px;
+      color: #888;
+      margin-top: 8px;
     ">
       <img src="/trashcan type.svg" style="
         width: 16px;
