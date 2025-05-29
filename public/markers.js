@@ -242,7 +242,7 @@ function createInfoWindowContent(item) {
       color: #888;
       margin-top: 8px;
     ">
-      <img src="/trashcan type.svg" style="
+      <img src="/public/trashcan type.svg" style="
         width: 16px;
         height: 16px;
         margin-right: 8px;
