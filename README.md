@@ -1,4 +1,4 @@
-# BinFinder
+# Waste Watchers
 (↑프로젝트 제목)
 
 > 서울 쓰레기통 지도 👉 **https://v0-bin-finder-wf.vercel.app/**</p>
@@ -12,7 +12,7 @@ Are you troubling with finding a trash can in Seoul?</p>
 This map will help you to find a trash can while you travel in Seoul.</p>
 
 서울에서 쓰레기통 찾기 너무 어려우신가요? </p>
-BinFinder는 서울 여행자들을 위해 서울시에서 제공하는 공공데이터를 활용하여 만든 서울 쓰레기통 지도 서비스입니다 :)</p>
+Waste Watchers는 서울 여행자들을 위해 서울시에서 제공하는 공공데이터를 활용하여 만든 서울 쓰레기통 지도 서비스입니다 :)</p>
 내 위치 주변에서 가장 가까운 쓰레기통을 찾을 수 있습니다.</p>
 
 
