@@ -236,10 +236,20 @@ function createInfoWindowContent(item) {
     
     <!-- 쓰레기통 타입 -->
     <div style="
+      display: flex;
+      align-items: center;
       font-size: 14px;
       color: #888;
       margin-top: 8px;
-    ">${formattedTrashType}</div>
+    ">
+      <img src="/trashcan type.svg" style="
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+        vertical-align: middle;
+      " alt="쓰레기통 타입" />
+      <span>${formattedTrashType}</span>
+    </div>
   </div>
 `
 }
@@ -451,7 +461,6 @@ function updateVisibleAreaMarkers() {
       console.log("🔥 인포윈도우 내용 생성 중:", item)
       const content = createInfoWindowContent(item)
       console.log("🔥 생성된 인포윈도우 내용:", content.slice(0, 30), "...")
-
 
       const infoWindow = new window.naver.maps.InfoWindow({
         content: content,

@@ -641,7 +641,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 개발자 모드 설정 함수 (정의되지 않은 경우 추가)
+  // 개발자 모드 설정 함수 (정의되지 �����은 경우 추가)
   function setupDevMode() {
     // 로컬 스토리지에서 개발자 모드 설정 불러오기
     const devMode = localStorage.getItem("devMode") === "true";
