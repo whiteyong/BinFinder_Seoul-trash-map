@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://v0-bin-finder-wf.vercel.app/public/sitemap.xml
+Sitemap: https://v0-bin-finder-wf.vercel.app/sitemap.xml
