@@ -905,3 +905,51 @@ body.dev-mode .dev-only {
 .direction-button:hover {
   background-color: #0070e0;
 }
+
+/* 언어 변경 버튼 컨테이너 */
+.language-button-container {
+  position: relative;
+  width: 100%;
+  height: 0;
+  z-index: 15;
+}
+
+/* 언어 변경 버튼 */
+.language-toggle-button {
+  position: absolute;
+  margin-top: 10px;
+  top: 10px;
+  left: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 20;
+  transition: transform 0.2s ease;
+  padding: 0;
+}
+
+.language-toggle-button:hover {
+  transform: scale(1.05);
+}
+
+.language-toggle-button:active {
+  transform: scale(0.95);
+}
+
+.language-toggle-button img {
+  width: auto;
+  height: 32px;
+  display: block;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 480px) {
+  .language-toggle-button {
+    top: 8px;
+    left: 12px;
+  }
+
+  .language-toggle-button img {
+    height: 28px;
+  }
+}
