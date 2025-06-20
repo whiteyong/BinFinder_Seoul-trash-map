@@ -3,10 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start:dev": "http-server . -p 3000 -o",
     "build": "echo 'no build script'"
-  },
-  "devDependencies": {
-    "http-server": "^14.1.1"
   }
 }
